@@ -1,7 +1,10 @@
+require('dotenv').config()
+
 const uuid = require('uuid');
 const path = require('path');
-const {Device} = require('../models/models');
-const ApiError = require('../error/ApiError');
+
+// const sgMail = require('@sendgrid/mail')
+const fetch = require('node-fetch');
 
 class DeviceController {
 
@@ -15,26 +18,60 @@ class DeviceController {
      * @return (json) 
      * 
      */
+
+
+
+
+
     
     async homePage(req, res, next) { // Done
-     try {
-        let created = await Device.findAll({
-            order: [['createdAt', 'DESC']], // DESC -> from hight to low
-            limit: 4
+
+      const {value, side, vid, lam, num, tel} = req.body;
+      // console.log(req.files.img)
+      const img = req.files.img;
+      const fileName = uuid.v4() + ".jpg"
+      img.mv(path.resolve(__dirname, '..', 'static', fileName))
+
+      const IP = process.env.IP;
+
+        console.log(fileName)
+        const headers = {
+          'Content-Type':'application/json',
+          'Accept':'application/json',
+          'X-API-KEY':'65wsww4y9dhybukuf6qkz6sp6p8oxzsx988tgr8y'
+        };
+        
+        const inputBody = {
+          "message": {
+            "recipients": [
+              {
+                "email": "info@kopi34.ru"
+              }
+            ],
+            "body": {
+              "html": "<p><b>Цена: " +value+"</b><br>Сторонность: " +side+"<br>Бумага: " +vid+"<br>Ламинация: " +lam+"<br>Кол-во: " +num+"<br>Телефон: " +tel+"<br>Телефон: "+fileName+"</p><img src='http://"+IP+":5000/"+fileName+"'>",
+              "plaintext": "Hello, {{to_name}}",
+            },
+            "subject": "string",
+            "from_email": "one@kopi34.ru",
+            "from_name": "John Smith"
+          }
+        };
+        fetch('https://go1.unisender.ru/ru/transactional/api/v1/email/send.json',
+        {
+          method: 'POST',
+          body: JSON.stringify(inputBody),
+          headers: headers
+        })
+        .then(function(res) {
+            return res.json();
+        }).then(function(body) {
+            console.log(body);
         });
-        let price = await Device.findAll({
-            order: [['price', 'ASC']], // ASC -> from low to hight
-            limit: 4
-        });
-        let sale = await Device.findAll({
-            order: [['sale', 'DESC']], // 
-            limit: 4
-        });
-        // TODO: add custom list of devices by session
-        return res.json({created: created, price: price, sale: sale})
-    } catch (e) {
-        next(ApiError.badRequest(e.message))
-    }
+
+
+          return res.json('fhf: "ddjdj"')
+        
 
     }
 
@@ -66,38 +103,6 @@ class DeviceController {
         }
         }
 
-
-        /* POST: - http://localhost:5000/api/category/:category/:page   
-     * 
-     * @param req.body      |   <form_input>        ->  1
-     *        req.file      |   <form_input_file>   ->  0
-     * @param req.params    |   /:id                ->  1
-     * @param req.query     |   /?param=1&          ->  0
-     * 
-     * @return (json) 
-     * 
-     */
-    
-        async getAll(req, res, next) {
-           try{
-            // return res.status(401).json({tt: 34})
-        //    const {order} = req.body;
-        const { category, page } = req.params;
-            const offset = (page - 1) * 8;
-            
-            const devices = await Device.findAndCountAll({
-                where: {category: category},
-                order: [['name', 'DESC']], // DESC -> from hight to low
-                // offset: offset,
-                limit: 8
-            });
-    
-     
-            return res.json(devices)
-        } catch (e) {
-            next(ApiError.badRequest(e.message))
-        }
-        }
 
     
 
@@ -137,90 +142,6 @@ class DeviceController {
 
 
 
-
-
-    /* GET: - http://localhost:5000/api/device/del/:id 
-     * 
-     * @param req.body      |   <form_input>        -> 0 
-     *        req.file      |   <form_input_file>   -> 0 
-     * @param req.params    |   /:id                -> 1 
-     * @param req.query     |   /?param=1&          -> 0 
-     * 
-     * @return (json) 
-     * 
-     */ 
-
-    async delete(req, res) {
-        try{  
-        const {id} = req.params;
-        
-        
-        const device = await Device.destroy(
-            {
-                where: {id: id}
-            }
-        )
-        return res.json(device)
-    } catch (e) {
-        next(ApiError.badRequest(e.message))
-    }
-    }
-    
-    /* GET: - http://localhost:5000/api/user-devices/
-     * 
-     * @param req.body      |   <form_input>        ->  0
-     *        req.file      |   <form_input_file>   ->  0
-     * @param req.params    |   /:id                ->  0
-     * @param req.query     |   /?param=1&          ->  0
-     * 
-     * @return (json) 
-     * 
-     */
-
-    async deviceListUser(req, res) {
-        try{
-        const userId = req.user.id;
-        
-        
-        const devices = await Device.findAll({
-            where: {userId: userId}
-        });
-
-        return res.json(devices)
-    } catch (e) {
-        next(ApiError.badRequest(e.message))
-    }
-    }
-
-
-    /* POST: - http://localhost:5000/api/user-devices/change/:id
-     * 
-     * @param req.body      |   <form_input>        ->  1
-     *        req.file      |   <form_input_file>   ->  1
-     * @param req.params    |   /:id                ->  1
-     * @param req.query     |   /?param=1&          ->  0
-     * 
-     * @return (json) 
-     * 
-     */
-// TODO - to finish this method
-    // async change(req, res) {
-    //     try{
-    //     const id = req.params;
-    //     const {name, price, old_price, sale, category} = req.body;
-    //     const userId = req.user.id;
-    //     const {img} = req.files;
-    //     const fileName = uuid.v4() + ".jpg"
-    //     img.mv(path.resolve(__dirname, '..', 'static', fileName))
-        
-    //     await User.update({ lastName: "Doe" }, {where: {id: id}});
-
-    
-    //     return res.json(devices)
-    // } catch (e) {
-    //     next(ApiError.badRequest(e.message))
-    // }
-    // }
 
 }
 
