@@ -18,7 +18,7 @@ x&qkw4bH%VG*
 
 
 
-<img src='http://localhost:5000/3e53afbb-5116-462e-aa20-098bbad0a22a.jpg'>
+<img src='http://localhost:5000 '>
 
 
 
@@ -35,3 +35,8 @@ gokey._domainkey    1800    IN    TXT    v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBA
 
 	
 v=spf1 include:beget.com include:spf.unisender.ru ~all
+
+
+
+
+live_k25GTirGEy6mpQ9SrTNrIVf1XX9spgXAWz96GBER9UQ

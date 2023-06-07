@@ -1,5 +1,7 @@
 require('dotenv').config()
 
+
+
 const uuid = require('uuid');
 const path = require('path');
 
@@ -49,7 +51,7 @@ class DeviceController {
               }
             ],
             "body": {
-              "html": "<p><b>Цена: " +value+"</b><br>Сторонность: " +side+"<br>Бумага: " +vid+"<br>Ламинация: " +lam+"<br>Кол-во: " +num+"<br>Телефон: " +tel+"<br>Телефон: "+fileName+"</p><img src='http://"+IP+":5000/"+fileName+"'>",
+              "html": "<p><b>Цена: " +value+"</b><br>Сторонность: " +side+"<br>Бумага: " +vid+"<br>Ламинация: " +lam+"<br>Кол-во: " +num+"<br>Телефон: " +tel+"</p><img src='http://"+IP+":5000/"+fileName+"'>",
               "plaintext": "Hello, {{to_name}}",
             },
             "subject": "string",
@@ -69,8 +71,45 @@ class DeviceController {
             console.log(body);
         });
 
+          const payV = String(value);
 
-          return res.json('fhf: "ddjdj"')
+        const IdempotenceKey = uuid.v4();
+
+        const headersP = {
+          'Content-Type':'application/json',
+          'Idempotence-Key': IdempotenceKey,
+          'Authorization': 'Basic ' + btoa('322722:live_k25GTirGEy6mpQ9SrTNrIVf1XX9spgXAWz96GBER9UQ')
+        };
+        
+        const inputBodyP = {
+          "amount": {
+            "value": payV,
+            "currency": 'RUB'
+        },
+        "payment_method_data": {
+            "type": 'bank_card'
+        },
+        "confirmation": {
+            "type": 'redirect',
+            "return_url": 'https://kopi34.ru/payinfo'
+        }
+         
+        };
+
+
+
+        fetch('https://api.yookassa.ru/v3/payments',
+        {
+          method: 'POST',
+          body: JSON.stringify(inputBodyP),
+          headers: headersP
+          
+        })
+        .then(function(res) {
+            return res.json();
+        }).then(function(body) {
+          return res.json(body)
+        });
         
 
     }
@@ -87,61 +126,30 @@ class DeviceController {
      * 
      */
 
-        async getOne(req, res, next) {
-           try{
-            const {id} = req.params
-            // console.log(id);
+        async getPay(req, res, next) { // Done
+
+          const headersP = {
+            'Authorization': 'Basic ' + btoa('322722:live_k25GTirGEy6mpQ9SrTNrIVf1XX9spgXAWz96GBER9UQ')
+          };
+          
+          const {payinfo} = req.body;
+          
+          console.log(payinfo)
+          fetch('https://api.yookassa.ru/v3/payments/'+payinfo,
+          {
+            method: 'GET',
+            headers: headersP
             
-            const device = await Device.findOne(
-                {
-                    where: {id: id}
-                }
-            )
-            return res.json(device)
-        } catch (e) {
-            next(ApiError.badRequest(e.message))
-        }
+          })
+          .then(function(res) {
+              return res.json();
+          }).then(function(body) {
+            return res.json(body)
+          });
         }
 
 
     
-
-// ################################# CLOSED:
-
-
-    
-    /* POST: - http://localhost:5000/api/device/create-device/      
-     * 
-     * @param req.body      |   <form_input>        ->  1   
-     *        req.file      |   <form_input_file>   ->  1
-     * @param req.params    |   /:id                ->  1
-     * @param req.query     |   /?param=1&          ->  0
-     * 
-     * @return (json) 
-     * 
-     */
-    
-    async create(req, res, next) {
-        try {
-            const {name, price, old_price, sale, category} = req.body;
-            // const userId = req.user.id;
-            const img = req.files.img;
-            const fileName = uuid.v4() + ".jpg"
-            img.mv(path.resolve(__dirname, '..', 'static', fileName))
-            // const device = await Device.create({name, price, old_price, sale, category, userId, img: fileName});
-            const device = await Device.create({name, price, old_price, sale, category, img: fileName});
-
-            return res.json(device)
-            
-        } catch (e) {
-            next(ApiError.badRequest(e.message))
-        }
-
-    }
-
-
-
-
 
 }
 
