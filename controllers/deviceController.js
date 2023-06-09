@@ -26,7 +26,7 @@ class DeviceController {
 
 
     
-    async homePage(req, res, next) { // Done
+    async homePagef(req, res, next) { // Done
 
       const {value, side, vid, lam, num, tel} = req.body;
       // console.log(req.files.img)
@@ -72,6 +72,59 @@ class DeviceController {
         });
 
           const payV = String(value);
+
+        const IdempotenceKey = uuid.v4();
+
+        const headersP = {
+          'Content-Type':'application/json',
+          'Idempotence-Key': IdempotenceKey,
+          'Authorization': 'Basic ' + btoa('322722:live_k25GTirGEy6mpQ9SrTNrIVf1XX9spgXAWz96GBER9UQ')
+        };
+        
+        const inputBodyP = {
+          "amount": {
+            "value": payV,
+            "currency": 'RUB'
+        },
+        "payment_method_data": {
+            "type": 'bank_card'
+        },
+        "confirmation": {
+            "type": 'redirect',
+            "return_url": 'https://kopi34.ru/payinfo'
+        }
+         
+        };
+
+
+
+        fetch('https://api.yookassa.ru/v3/payments',
+        {
+          method: 'POST',
+          body: JSON.stringify(inputBodyP),
+          headers: headersP
+          
+        })
+        .then(function(res) {
+            return res.json();
+        }).then(function(body) {
+          return res.json(body)
+        });
+        
+
+    }
+
+
+
+
+
+
+
+
+
+    async homePage(req, res, next) { // Done
+
+          const payV = '2';
 
         const IdempotenceKey = uuid.v4();
 
