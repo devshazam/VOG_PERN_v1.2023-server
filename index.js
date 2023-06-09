@@ -57,17 +57,12 @@ const options = {
   cert: fs.readFileSync("server.cert"),
 };
   
-// Creating https server by passing
-// options and app object
-
-// https
-//   .createServer(app)
-//   .listen(5000, ()=>{
-//     console.log('server is runing at port 5000')
-//   });
 
 
-https.createServer(options, app)
-.listen(5000, function (req, res) {
-  console.log("Server started at port 3000");
-});
+
+// https.createServer(options, app)
+// .listen(5000, function (req, res) {
+//   console.log("Server started at port 5000");
+// });
+
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
