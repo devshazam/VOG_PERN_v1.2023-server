@@ -8,10 +8,23 @@ const fileUpload = require('express-fileupload')
 const router = require('./routes/index')
 const path = require('path')
 
-const PORT = process.env.PORT || 5000
+
+
+const https = require("https");
+// const fs = request("fs");
+
+
+
+
+
+
+
+
+  const PORT = process.env.PORT || 5000
 
 const app = express()
 
+const fs = require("fs");
 
 // ###################### middleware #############################
 // Подключение посредников, порядок подключения влияет на исполнение кода
@@ -28,9 +41,31 @@ app.use(fileUpload({}))
 app.use('/api', router) 
 // Подключать последним! - обработка ошибок.
 
-
+app.get('/', (req, res) => {
+  res.send("GET Request Called")
+})
 
 // ###################### END ##################################
 
-app.listen(PORT)
 
+
+
+const options = {
+  key: fs.readFileSync("server.key"),
+  cert: fs.readFileSync("server.cert"),
+};
+  
+// Creating https server by passing
+// options and app object
+
+// https
+//   .createServer(app)
+//   .listen(5000, ()=>{
+//     console.log('server is runing at port 5000')
+//   });
+
+
+https.createServer(options, app)
+.listen(5000, function (req, res) {
+  console.log("Server started at port 3000");
+});
