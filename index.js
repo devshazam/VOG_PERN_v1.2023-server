@@ -29,7 +29,7 @@ const fs = require("fs");
 // ###################### middleware #############################
 // Подключение посредников, порядок подключения влияет на исполнение кода
 app.use(cors({
-  origin: ['https://www.kopi34.ru/']
+  origin: ['https://kopi34.ru/']
 }));
 app.use(express.json())
 
