@@ -31,6 +31,13 @@ const fs = require("fs");
 app.use(cors({
   origin: ['https://kopi34.ru/', 'https://api.kopi34.ru/']
 }));
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://kopi34.ru/');
+  next();
+});
+
+
 app.use(express.json())
 
 // Подключение хранилища файлов и системы их загрузки
