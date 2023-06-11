@@ -33,10 +33,16 @@ app.use(cors({
 }));
 
 app.use((req, res, next) => {
-  res.set('Access-Control-Allow-Origin', 'https://kopi34.ru/');
+  res.set('Access-Control-Allow-Origin', 'https://kopi34.ru');
+  // res.set('Access-Control-Allow-Origin', 'https://kopi34.ru');
+  // res.set('Access-Control-Allow-Credentials', 'true');
   // res.set('Content-Type', 'text/plain')
   next();
 });
+
+@header( 'Content-Type: text/html; charset=' . get_option( 'blog_charset' ) );
+@header( 'Access-Control-Allow-Origin: https://domain.com' ); // Без слеша в конце. Не знаю почему, но это важно
+@header( 'Access-Control-Allow-Credentials: true' );
 
 
 app.use(express.json())
