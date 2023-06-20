@@ -21,11 +21,6 @@ class DeviceController {
      * 
      */
 
-
-
-
-
-    
     async homePage(req, res, next) { // Done
 
       const {value, side, vid, lam, num, tel} = req.body;
@@ -56,7 +51,7 @@ class DeviceController {
             },
             "subject": "string",
             "from_email": "one@kopi34.ru",
-            "from_name": "John Smith"
+            "from_name": "From site"
           }
         };
         fetch('https://go1.unisender.ru/ru/transactional/api/v1/email/send.json',
@@ -71,6 +66,8 @@ class DeviceController {
             console.log(body);
         });
 
+
+        // 
           const payV = String(value);
 
         const IdempotenceKey = uuid.v4();
@@ -91,7 +88,7 @@ class DeviceController {
         },
         "confirmation": {
             "type": 'redirect',
-            "return_url": 'https://kopi34.ru/payinfo'
+            "return_url": 'https://kopi34.ru'
         }
          
         };
