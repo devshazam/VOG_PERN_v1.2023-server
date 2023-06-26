@@ -10,22 +10,24 @@ const fetch = require('node-fetch');
 
 class DeviceController {
 
-    /* GET: - http://localhost:5000/api/device/ 
-     * 
-     * @param req.body      |   <form_input>        -> 0 
-     *        req.file      |   <form_input_file>   -> 0 
-     * @param req.params    |   /:id                -> 0            
-     * @param req.query     |   /?param=1&          -> 0 
-     * 
-     * @return (json) 
-     * 
-     */
+
+
+    /* GET: - http://localhost:5000/api/device/test1     */
+
+  async test1(req, res, next) { // Done
+
+    const {value, side, vid, lam, num, tel} = req.body;
+
+    return res.json({q: value, w: side, e: vid, r: lam, t: num, y: tel});
+  }
+
+    /*   POST - http://localhost:5000/api/device/    */
 
     async homePage(req, res, next) { // Done
 
       const {value, side, vid, lam, num, tel} = req.body;
       // console.log(req.files.img)
-      const img = req.files.img;
+      const img = req.files.img;      
       const fileName = uuid.v4() + ".jpg"
       img.mv(path.resolve(__dirname, '..', 'static', fileName))
 
@@ -112,16 +114,7 @@ class DeviceController {
     }
 
 
-        /* GET: - http://localhost:5000/api/device/device-view/:id 
-     * 
-     * @param req.body      |   <form_input>        ->  0
-     *        req.file      |   <form_input_file>   ->  0
-     * @param req.params    |   /:id                ->  1
-     * @param req.query     |   /?param=1&          ->  0
-     * 
-     * @return (json) 
-     * 
-     */
+        /* GET: - http://localhost:5000/api/device/device-view/:id      */
 
         async getPay(req, res, next) { // Done
 
@@ -145,8 +138,6 @@ class DeviceController {
           });
         }
 
-
-    
 
 }
 
