@@ -25,6 +25,4 @@ router.get('/delete-device/:id/', authMiddleware, deviceController.delete)
 
 
 
-
-
 module.exports = router

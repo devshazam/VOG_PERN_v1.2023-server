@@ -11,7 +11,24 @@ const generateJwt = (id, email, role) => {
     )
 }
 
+
+/*
+* USER + ADMIN
+*   1. Регистрация
+*   2. Вход
+*       Добавить после:
+*           1. Личный кабинет (страница заказов + стрница замены контактов)
+*
+*
+*/
+
 class UserController {
+
+    /* Регистрация пользователя
+    *   1. Подтверждение email
+    *   2. 
+    */
+
     async registration(req, res, next) {
         const {email, password, role} = req.body
         if (!email || !password) {
@@ -27,6 +44,8 @@ class UserController {
         return res.json({token})
     }
 
+
+    // Вход для обыччных пользователей
     async login(req, res, next) {
         const {email, password} = req.body
         const user = await User.findOne({where: {email}})
@@ -41,6 +60,8 @@ class UserController {
         return res.json({token})
     }
 
+
+    // TODO Что это ?????
     async check(req, res, next) {
         const token = generateJwt(req.user.id, req.user.email, req.user.role)
         return res.json({token})
