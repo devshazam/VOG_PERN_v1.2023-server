@@ -12,6 +12,7 @@ const fetch = require('node-fetch');
 *
 * 2. Администраторы
 *       - get - таблица с заказами
+*           - изменить статус готовностио
 *       - 
 *
 */
@@ -133,7 +134,7 @@ class DeviceController {
         }
 
 
-/* (3) GET: - http://localhost:5000/api/device/device-view/:id      
+/* (3) GET: - http://localhost:5000/api/device/device-view/:id
 *
 * 1. подтверждение оплаты заказа
 */
