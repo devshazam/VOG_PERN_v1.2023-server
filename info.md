@@ -12,3 +12,7 @@ x&qkw4bH%VG*
 
 <img src='http://localhost:5000 '>
 
+
+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
+
+git config --global credential.helper store
