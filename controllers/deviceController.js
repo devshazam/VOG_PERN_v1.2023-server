@@ -51,43 +51,9 @@ class DeviceController {
         const fileName = uuid.v4() + ".jpg"
         img.mv(path.resolve(__dirname, '..', 'static', fileName))
 
-        const IP = process.env.IP;
+    
 
-            console.log(fileName)
-            const headers = {
-            'Content-Type':'application/json',
-            'Accept':'application/json',
-            'X-API-KEY':'65wsww4y9dhybukuf6qkz6sp6p8oxzsx988tgr8y'
-            };
-            
-            const inputBody = {
-            "message": {
-                "recipients": [
-                {
-                    "email": "info@kopi34.ru"
-                }
-                ],
-                "body": {
-                "html": "<p><b>Цена: " +value+"</b><br>Сторонность: " +side+"<br>Бумага: " +vid+"<br>Ламинация: " +lam+"<br>Кол-во: " +num+"<br>Телефон: " +tel+"</p><img src='http://"+IP+":5000/"+fileName+"'>",
-                "plaintext": "Hello, {{to_name}}",
-                },
-                "subject": "string",
-                "from_email": "one@kopi34.ru",
-                "from_name": "From site"
-            }
-            };
-            fetch('https://go1.unisender.ru/ru/transactional/api/v1/email/send.json',
-            {
-            method: 'POST',
-            body: JSON.stringify(inputBody),
-            headers: headers
-            })
-            .then(function(res) {
-                return res.json();
-            }).then(function(body) {
-                console.log(body);
-            });
-
+           
 
             // 
             const payV = String(value);
@@ -97,6 +63,7 @@ class DeviceController {
             const headersP = {
             'Content-Type':'application/json',
             'Idempotence-Key': IdempotenceKey,
+            // TODO - Заменить открытые пароли на env
             'Authorization': 'Basic ' + btoa('322722:live_k25GTirGEy6mpQ9SrTNrIVf1XX9spgXAWz96GBER9UQ')
             };
             
@@ -176,24 +143,24 @@ class DeviceController {
 */
     
     async homePage(req, res, next) { // Done
-     try {
-        let created = await Device.findAll({
-            order: [['createdAt', 'DESC']], // DESC -> from hight to low
-            limit: 4
-        });
-        let price = await Device.findAll({
-            order: [['price', 'ASC']], // ASC -> from low to hight
-            limit: 4
-        });
-        let sale = await Device.findAll({
-            order: [['sale', 'DESC']], // 
-            limit: 4
-        });
-        // TODO: add custom list of devices by session
-        return res.json({created: created, price: price, sale: sale})
-    } catch (e) {
-        next(ApiError.badRequest(e.message))
-    }
+            try {
+                    let created = await Device.findAll({
+                        order: [['createdAt', 'DESC']], // DESC -> from hight to low
+                        limit: 4
+                    });
+                    let price = await Device.findAll({
+                        order: [['price', 'ASC']], // ASC -> from low to hight
+                        limit: 4
+                    });
+                    let sale = await Device.findAll({
+                        order: [['sale', 'DESC']], // 
+                        limit: 4
+                    });
+                    // TODO: add custom list of devices by session
+                    return res.json({created: created, price: price, sale: sale})
+            } catch (e) {
+                    next(ApiError.badRequest(e.message))
+            }
 
     }
 
