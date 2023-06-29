@@ -3,6 +3,7 @@ const path = require('path');
 const {Device} = require('../models/models');
 const ApiError = require('../error/ApiError');
 
+
 const fetch = require('node-fetch');
 
 /*
@@ -21,19 +22,14 @@ const fetch = require('node-fetch');
 class DeviceController {
 
 
-/* (1) GET: - http://localhost:5000/api/device/test1    
-*
-* Тестирование - 
-* 
-* */
-
-        async test1(req, res, next) { // Done
-
-            const {value, side, vid, lam, num, tel} = req.body;
-
-            return res.json({q: value, w: side, e: vid, r: lam, t: num, y: tel});
+        async testFirst(req, res, next) { // Done
+            const {value, description, tel} = req.body;
+            // console.log(req.files.img)
+            // const img = req.files.img;      
+            // const fileName = uuid.v4() + ".jpg"
+            // img.mv(path.resolve(__dirname, '..', 'static', fileName))
+            return res.json({value, description, tel})
         }
-
 
 /* (2)  POST - http://localhost:5000/api/device/    
 *
@@ -44,42 +40,49 @@ class DeviceController {
 * */
 
         async homePage(req, res, next) { // Done
+        
+        // Получчение post запроса
+            const {value, description, tel} = req.body;
+            // console.log(req.files.img)
+            const img = req.files.img;      
+            const fileName = uuid.v4() + ".jpg"
+            img.mv(path.resolve(__dirname, '..', 'static', fileName))
 
-        const {value, side, vid, lam, num, tel} = req.body;
-        // console.log(req.files.img)
-        const img = req.files.img;      
-        const fileName = uuid.v4() + ".jpg"
-        img.mv(path.resolve(__dirname, '..', 'static', fileName))
+        // Отправить в Базу данных
+            // const jane = await Device.create({ firstName: "Jane", lastName: "Doe" });
 
-    
 
-           
+            // const {name, price, old_price, sale, category} = req.body;
+            // const userId = req.user.id;
+            // const img = req.files.img;
+            // const fileName = uuid.v4() + ".jpg"
+            // img.mv(path.resolve(__dirname, '..', 'static', fileName))
+            // const device = await Device.create({name, price, old_price, sale, category, userId, img: fileName});
+        
 
-            // 
+
+
+        // Send to YOOMONEY
             const payV = String(value);
-
             const IdempotenceKey = uuid.v4();
-
             const headersP = {
             'Content-Type':'application/json',
             'Idempotence-Key': IdempotenceKey,
-            // TODO - Заменить открытые пароли на env
+        // TODO - Заменить открытые пароли на env
             'Authorization': 'Basic ' + btoa('322722:live_k25GTirGEy6mpQ9SrTNrIVf1XX9spgXAWz96GBER9UQ')
             };
-            
             const inputBodyP = {
-            "amount": {
-                "value": payV,
-                "currency": 'RUB'
-            },
-            "payment_method_data": {
-                "type": 'bank_card'
-            },
-            "confirmation": {
-                "type": 'redirect',
-                "return_url": 'https://kopi34.ru'
-            }
-            
+                "amount": {
+                    "value": payV,
+                    "currency": 'RUB'
+                },
+                "payment_method_data": {
+                    "type": 'bank_card'
+                },
+                "confirmation": {
+                    "type": 'redirect',
+                    "return_url": 'https://kopi34.ru'
+                }
             };
 
 
@@ -177,19 +180,19 @@ class DeviceController {
      */
 
         async getOne(req, res, next) {
-           try{
-            const {id} = req.params
-            // console.log(id);
-            
-            const device = await Device.findOne(
-                {
-                    where: {id: id}
-                }
-            )
-            return res.json(device)
-        } catch (e) {
-            next(ApiError.badRequest(e.message))
-        }
+            try{
+                const {id} = req.params
+                // console.log(id);
+                
+                const device = await Device.findOne(
+                    {
+                        where: {id: id}
+                    }
+                )
+                return res.json(device)
+            } catch (e) {
+                next(ApiError.badRequest(e.message))
+            }
         }
 
 
@@ -205,24 +208,24 @@ class DeviceController {
      */
     
         async getAll(req, res, next) {
-           try{
-            // return res.status(401).json({tt: 34})
-        //    const {order} = req.body;
-        const { category, page } = req.params;
-            const offset = (page - 1) * 8;
+                try{
+                    // return res.status(401).json({tt: 34})
+                //    const {order} = req.body;
+                const { category, page } = req.params;
+                    const offset = (page - 1) * 8;
+                    
+                    const devices = await Device.findAndCountAll({
+                        where: {category: category},
+                        order: [['name', 'DESC']], // DESC -> from hight to low
+                        // offset: offset,
+                        limit: 8
+                    });
             
-            const devices = await Device.findAndCountAll({
-                where: {category: category},
-                order: [['name', 'DESC']], // DESC -> from hight to low
-                // offset: offset,
-                limit: 8
-            });
-    
-     
-            return res.json(devices)
-        } catch (e) {
-            next(ApiError.badRequest(e.message))
-        }
+            
+                    return res.json(devices)
+                } catch (e) {
+                    next(ApiError.badRequest(e.message))
+                }
         }
 
     
@@ -243,19 +246,19 @@ class DeviceController {
      */
     
     async create(req, res, next) {
-        try {
-            const {name, price, old_price, sale, category} = req.body;
-            const userId = req.user.id;
-            const img = req.files.img;
-            const fileName = uuid.v4() + ".jpg"
-            img.mv(path.resolve(__dirname, '..', 'static', fileName))
-            const device = await Device.create({name, price, old_price, sale, category, userId, img: fileName});
-            
-            return res.json(device)
-            
-        } catch (e) {
-            next(ApiError.badRequest(e.message))
-        }
+            try {
+                const {name, price, old_price, sale, category} = req.body;
+                const userId = req.user.id;
+                const img = req.files.img;
+                const fileName = uuid.v4() + ".jpg"
+                img.mv(path.resolve(__dirname, '..', 'static', fileName))
+                const device = await Device.create({name, price, old_price, sale, category, userId, img: fileName});
+                
+                return res.json(device)
+                
+            } catch (e) {
+                next(ApiError.badRequest(e.message))
+            }
 
     }
 
@@ -276,19 +279,19 @@ class DeviceController {
      */ 
 
     async delete(req, res) {
-        try{  
-        const {id} = req.params;
-        
-        
-        const device = await Device.destroy(
-            {
-                where: {id: id}
-            }
-        )
-        return res.json(device)
-    } catch (e) {
-        next(ApiError.badRequest(e.message))
-    }
+            try{  
+            const {id} = req.params;
+            
+            
+            const device = await Device.destroy(
+                {
+                    where: {id: id}
+                }
+            )
+            return res.json(device)
+        } catch (e) {
+            next(ApiError.badRequest(e.message))
+        }
     }
     
     /* GET: - http://localhost:5000/api/user-devices/
@@ -303,18 +306,18 @@ class DeviceController {
      */
 
     async deviceListUser(req, res) {
-        try{
-        const userId = req.user.id;
-        
-        
-        const devices = await Device.findAll({
-            where: {userId: userId}
-        });
+            try{
+            const userId = req.user.id;
+            
+            
+            const devices = await Device.findAll({
+                where: {userId: userId}
+            });
 
-        return res.json(devices)
-    } catch (e) {
-        next(ApiError.badRequest(e.message))
-    }
+            return res.json(devices)
+        } catch (e) {
+            next(ApiError.badRequest(e.message))
+        }
     }
 
 

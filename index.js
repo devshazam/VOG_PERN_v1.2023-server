@@ -24,7 +24,7 @@ const app = express()
 // ###################### middleware #############################
 // Подключение посредников, порядок подключения влияет на исполнение кода
 app.use(cors({
-  origin: 'https://kopi34.ru'
+  origin: ["https://kopi34.ru","http://localhost:3000"] 
 }));
 
 

@@ -6,8 +6,10 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 
 
+
 // Open
-router.get('/', deviceController.homePage) 
+// router.get('/', deviceController.homePage) 
+router.post('/', deviceController.testFirst) 
 router.get('/device-view/:id', deviceController.getOne) 
 router.get('/category/:category/:page', deviceController.getAll) 
 
