@@ -2,6 +2,7 @@ const ApiError = require('../error/ApiError');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const {User} = require('../models/models')
+const uuid = require('uuid');
 
 const generateJwt = (id, email, role) => {
     return jwt.sign(
@@ -70,6 +71,55 @@ class UserController {
     async check(req, res, next) {
         const token = generateJwt(req.user.id, req.user.email, req.user.role)
         return res.json({token})
+    }
+
+
+
+// Подтверждение почты при регистрации
+    async confirmMail(req, res, next) {
+        // const {email} = req.body
+
+        const mail = 'fhfh'
+        return res.json({mail})
+
+
+    // Отправка кода подтверждения на email клиента
+        // console.log(fileName)
+        const headers = {
+          'Content-Type':'application/json',
+          'Accept':'application/json',
+          'X-API-KEY':process.env.UNISENDER_API_KEY
+        };
+        
+        const confirmCode = uuid.v4()
+        const inputBody = {
+          "message": {
+            "recipients": [
+              {
+                "email": email
+              }
+            ],
+            "body": {
+              "html": "<p>Уважаемый клиент ваш код подтвержденния поччтового адреса расположен в этой строке:</p><h1>" + confirmCode + "</h1>", // уникальный код подтверждения UUID
+              "plaintext": "Hello, {{to_name}}",
+            },
+            "subject": "Пароль подтверждения почты",
+            "from_email": "one@kopi34.ru",
+            "from_name": "письмо с сайта kopi34.ru"
+          }
+        };
+        fetch('https://go1.unisender.ru/ru/transactional/api/v1/email/send.json',
+        {
+          method: 'POST',
+          body: JSON.stringify(inputBody),
+          headers: headers
+        })
+        .then(function(res) {
+            return res.json();
+        }).then(function(body) {
+            
+        });
+        return res.json(confirmCode)
     }
 
 }

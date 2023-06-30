@@ -8,6 +8,7 @@ const authMiddleware = require('../middleware/authMiddleware')
 
 router.post('/registration', userController.registration)
 router.post('/login', userController.login)
+router.post('/confirm-mail', userController.confirmMail)
 router.get('/auth', authMiddleware, userController.check)
 
 
