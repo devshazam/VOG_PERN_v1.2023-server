@@ -1,6 +1,6 @@
 const uuid = require('uuid');
 const path = require('path');
-const {Device} = require('../models/models');
+const {Device, User} = require('../models/models');
 const ApiError = require('../error/ApiError');
 
 
@@ -40,67 +40,51 @@ class DeviceController {
 * */
 
         async homePage(req, res, next) { // Done
-        
-        // Получчение post запроса
-            const {value, description, tel} = req.body;
-            // console.log(req.files.img)
-            const img = req.files.img;      
-            const fileName = uuid.v4() + ".jpg"
-            img.mv(path.resolve(__dirname, '..', 'static', fileName))
+                    const {name, value, description, userId} = req.body;
+                    // console.log(req.files.img)
+                    const img = req.files.img;      
+                    const fileName = uuid.v4() + ".jpg"
+                    img.mv(path.resolve(__dirname, '..', 'static', fileName))
 
-        // Отправить в Базу данных
-            // const jane = await Device.create({ firstName: "Jane", lastName: "Doe" });
+                    const user = await User.findOne({where: {id: userId}})
+                    const userDescription = `Имя клиента: ${user.name}; ID-клиента: ${user.name}; Телефон клиента: ${user.phone}; Email клиента: ${user.email}; Адрес клиента: ${user.address};`;
 
+                    const device = await Device.create({name, feature: description, userDescription: userDescription, img: fileName});
+                
+                // Send to YOOMONEY
+                    const payV = String(value);
+                    const IdempotenceKey = uuid.v4();
+                    const headersP = {
+                    'Content-Type':'application/json',
+                    'Idempotence-Key': IdempotenceKey,
+                // TODO - Заменить открытые пароли на env
+                    'Authorization': 'Basic ' + btoa(process.env.MARKET_ID+':'+process.env.SECRET_KEY_UMONEY)
+                    };
+                    const inputBodyP = {
+                        "amount": {
+                            "value": payV,
+                            "currency": 'RUB'
+                        },
+                        "payment_method_data": {
+                            "type": 'bank_card'
+                        },
+                        "confirmation": {
+                            "type": 'redirect',
+                            "return_url": 'https://kopi34.ru'
+                        }
+                    };
 
-            // const {name, price, old_price, sale, category} = req.body;
-            // const userId = req.user.id;
-            // const img = req.files.img;
-            // const fileName = uuid.v4() + ".jpg"
-            // img.mv(path.resolve(__dirname, '..', 'static', fileName))
-            // const device = await Device.create({name, price, old_price, sale, category, userId, img: fileName});
-        
-
-
-
-        // Send to YOOMONEY
-            const payV = String(value);
-            const IdempotenceKey = uuid.v4();
-            const headersP = {
-            'Content-Type':'application/json',
-            'Idempotence-Key': IdempotenceKey,
-        // TODO - Заменить открытые пароли на env
-            'Authorization': 'Basic ' + btoa('322722:live_k25GTirGEy6mpQ9SrTNrIVf1XX9spgXAWz96GBER9UQ')
-            };
-            const inputBodyP = {
-                "amount": {
-                    "value": payV,
-                    "currency": 'RUB'
-                },
-                "payment_method_data": {
-                    "type": 'bank_card'
-                },
-                "confirmation": {
-                    "type": 'redirect',
-                    "return_url": 'https://kopi34.ru'
-                }
-            };
-
-
-
-            fetch('https://api.yookassa.ru/v3/payments',
-            {
-            method: 'POST',
-            body: JSON.stringify(inputBodyP),
-            headers: headersP
-            
-            })
-            .then(function(res) {
-                return res.json();
-            }).then(function(body) {
-            return res.json(body)
-            });
-            
-
+                    fetch('https://api.yookassa.ru/v3/payments',
+                    {
+                    method: 'POST',
+                    body: JSON.stringify(inputBodyP),
+                    headers: headersP
+                    })
+                    .then(function(res) {
+                        return res.json();
+                    }).then(function(body) {
+                    return res.json(body)
+                    });
         }
 
 
@@ -230,95 +214,6 @@ class DeviceController {
 
     
 
-// ################################# CLOSED:
-
-
-    
-    /* POST: - http://localhost:5000/api/device/create-device/      
-     * 
-     * @param req.body      |   <form_input>        ->  1   
-     *        req.file      |   <form_input_file>   ->  1
-     * @param req.params    |   /:id                ->  1
-     * @param req.query     |   /?param=1&          ->  0
-     * 
-     * @return (json) 
-     * 
-     */
-    
-    async create(req, res, next) {
-            try {
-                const {name, price, old_price, sale, category} = req.body;
-                const userId = req.user.id;
-                const img = req.files.img;
-                const fileName = uuid.v4() + ".jpg"
-                img.mv(path.resolve(__dirname, '..', 'static', fileName))
-                const device = await Device.create({name, price, old_price, sale, category, userId, img: fileName});
-                
-                return res.json(device)
-                
-            } catch (e) {
-                next(ApiError.badRequest(e.message))
-            }
-
-    }
-
-
-
-
-
-
-    /* GET: - http://localhost:5000/api/device/del/:id 
-     * 
-     * @param req.body      |   <form_input>        -> 0 
-     *        req.file      |   <form_input_file>   -> 0 
-     * @param req.params    |   /:id                -> 1 
-     * @param req.query     |   /?param=1&          -> 0 
-     * 
-     * @return (json) 
-     * 
-     */ 
-
-    async delete(req, res) {
-            try{  
-            const {id} = req.params;
-            
-            
-            const device = await Device.destroy(
-                {
-                    where: {id: id}
-                }
-            )
-            return res.json(device)
-        } catch (e) {
-            next(ApiError.badRequest(e.message))
-        }
-    }
-    
-    /* GET: - http://localhost:5000/api/user-devices/
-     * 
-     * @param req.body      |   <form_input>        ->  0
-     *        req.file      |   <form_input_file>   ->  0
-     * @param req.params    |   /:id                ->  0
-     * @param req.query     |   /?param=1&          ->  0
-     * 
-     * @return (json) 
-     * 
-     */
-
-    async deviceListUser(req, res) {
-            try{
-            const userId = req.user.id;
-            
-            
-            const devices = await Device.findAll({
-                where: {userId: userId}
-            });
-
-            return res.json(devices)
-        } catch (e) {
-            next(ApiError.badRequest(e.message))
-        }
-    }
 
 
 

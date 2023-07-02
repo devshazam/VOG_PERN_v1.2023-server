@@ -6,15 +6,12 @@ const {DataTypes} = require('sequelize')
 const Device = sequelize.define('device', {
     // Данные товара
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}, 
-    title: {type: DataTypes.STRING, unique: true, allowNull: false}, // Название товара
+    name: {type: DataTypes.STRING, unique: true, allowNull: false}, // Название товара
     feature: {type: DataTypes.STRING, allowNull: false}, // Хар-ки заказа (Все параметры в тексте + описание)
     img: {type: DataTypes.STRING, allowNull: false}, // Ссылка на файл 
 
     // Данные клиента
-    name: {type: DataTypes.STRING, allowNull: false}, // Имя клиента 
-    phone: {type: DataTypes.STRING, allowNull: false}, // Телефон клиента 
-    email: {type: DataTypes.STRING, allowNull: false}, // Електронный адрес
-    address: {type: DataTypes.STRING, defaultValue: null}, // Адрес
+    userDescription: {type: DataTypes.STRING, allowNull: false}, // Имя клиента 
 
     // Готовность
     status_done: {type: DataTypes.BOOLEAN, defaultValue: false}, // Статус готовности - этот статус работники самостоятельно применяют при обработке заказа
@@ -29,6 +26,7 @@ const User = sequelize.define('user', {
     phone: {type: DataTypes.STRING, allowNull: false}, // Телефон клиента 
     email: {type: DataTypes.STRING, allowNull: false}, // Електронный адрес
     address: {type: DataTypes.STRING, defaultValue: null}, // Адрес
+    password: {type: DataTypes.STRING, allowNull: false}, // Пароль 
     role: {type: DataTypes.STRING, defaultValue: "USER"}, // Роль пользователя (USER/ADMIN)
     
     // Верификация
