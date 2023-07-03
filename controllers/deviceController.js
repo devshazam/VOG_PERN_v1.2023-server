@@ -112,11 +112,8 @@ class DeviceController {
 
 // (4) GET: - http://localhost:5000/api/device/admin/devices-view/ - Просмотр всех заказов
         async allOrdersAdmin(req, res, next) { // Done
-
-            devices = await Device.findAndCountAll({order: [['createdAt', 'DESC']], limit, ofset});
-
-
             // createdAt
+            
             let {itemSort, orderSort, limit, page} = req.query
             page = page || 1
             limit = limit || 10
@@ -126,9 +123,8 @@ class DeviceController {
             let devices;
             
             devices = await Device.findAndCountAll({order: [[itemSort, orderSort]], limit, offset});
-
+            console.log(devices)
             return res.json(devices)
-
         }
 
 
