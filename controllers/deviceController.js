@@ -22,6 +22,7 @@ const fetch = require('node-fetch');
 class DeviceController {
 
 
+// (1)  POST - http://localhost:5000/api/device/ - Покупка отдельных товаров с занесением в базу данных
         async testFirst(req, res, next) { // Done
             const {value, description, tel} = req.body;
             // console.log(req.files.img)
@@ -31,26 +32,23 @@ class DeviceController {
             return res.json({value, description, tel})
         }
 
-/* (2)  POST - http://localhost:5000/api/device/    
-*
-*   1. Покупка отдельных товаров с занесением в базу данных
-* 
-* 
-* 
-* */
 
+// (2)  POST - http://localhost:5000/api/device/ - Покупка отдельных товаров с занесением в базу данных
         async homePage(req, res, next) { // Done
+
                     const {name, value, description, userId} = req.body;
-                    // console.log(req.files.img)
+                    
                     const img = req.files.img;      
                     const fileName = uuid.v4() + ".jpg"
                     img.mv(path.resolve(__dirname, '..', 'static', fileName))
 
                     const user = await User.findOne({where: {id: userId}})
-                    const userDescription = `Имя клиента: ${user.name}; ID-клиента: ${user.name}; Телефон клиента: ${user.phone}; Email клиента: ${user.email}; Адрес клиента: ${user.address};`;
+                    const userDescription = `Имя клиента: ${user.name}; ID-клиента: ${user.id}; Телефон клиента: ${user.phone}; Email клиента: ${user.email}; Адрес клиента: ${user.address};`;
 
                     const device = await Device.create({name, feature: description, userDescription: userDescription, img: fileName});
-                
+
+
+
                 // Send to YOOMONEY
                     const payV = String(value);
                     const IdempotenceKey = uuid.v4();
@@ -88,11 +86,7 @@ class DeviceController {
         }
 
 
-/* (3) GET: - http://localhost:5000/api/device/device-view/:id
-*
-* 1. подтверждение оплаты заказа
-*/
-
+// (3) GET: - http://localhost:5000/api/device/device-view/:id - подтверждение оплаты заказа
         async getPay(req, res, next) { // Done
 
           const headersP = {
@@ -116,106 +110,26 @@ class DeviceController {
         }
 
 
+// (4) GET: - http://localhost:5000/api/device/admin/devices-view/ - Просмотр всех заказов
+        async allOrdersAdmin(req, res, next) { // Done
+
+            devices = await Device.findAndCountAll({order: [['createdAt', 'DESC']], limit, ofset});
 
 
-/* (4) GET: - http://localhost:5000/api/device/ 
-* 
-* @param req.body      |   <form_input>        -> 0 
-*        req.file      |   <form_input_file>   -> 0 
-* @param req.params    |   /:id                -> 0 
-* @param req.query     |   /?param=1&          -> 0 
-* 
-* @return (json) 
-* 
-*/
-    
-    async homePage(req, res, next) { // Done
-            try {
-                    let created = await Device.findAll({
-                        order: [['createdAt', 'DESC']], // DESC -> from hight to low
-                        limit: 4
-                    });
-                    let price = await Device.findAll({
-                        order: [['price', 'ASC']], // ASC -> from low to hight
-                        limit: 4
-                    });
-                    let sale = await Device.findAll({
-                        order: [['sale', 'DESC']], // 
-                        limit: 4
-                    });
-                    // TODO: add custom list of devices by session
-                    return res.json({created: created, price: price, sale: sale})
-            } catch (e) {
-                    next(ApiError.badRequest(e.message))
-            }
-
-    }
-
-
-        /* GET: - http://localhost:5000/api/device/device-view/:id 
-     * 
-     * @param req.body      |   <form_input>        ->  0
-     *        req.file      |   <form_input_file>   ->  0
-     * @param req.params    |   /:id                ->  1
-     * @param req.query     |   /?param=1&          ->  0
-     * 
-     * @return (json) 
-     * 
-     */
-
-        async getOne(req, res, next) {
-            try{
-                const {id} = req.params
-                // console.log(id);
-                
-                const device = await Device.findOne(
-                    {
-                        where: {id: id}
-                    }
-                )
-                return res.json(device)
-            } catch (e) {
-                next(ApiError.badRequest(e.message))
-            }
-        }
-
-
-        /* POST: - http://localhost:5000/api/category/:category/:page   
-     * 
-     * @param req.body      |   <form_input>        ->  1
-     *        req.file      |   <form_input_file>   ->  0
-     * @param req.params    |   /:id                ->  1
-     * @param req.query     |   /?param=1&          ->  0
-     * 
-     * @return (json) 
-     * 
-     */
-    
-        async getAll(req, res, next) {
-                try{
-                    // return res.status(401).json({tt: 34})
-                //    const {order} = req.body;
-                const { category, page } = req.params;
-                    const offset = (page - 1) * 8;
-                    
-                    const devices = await Device.findAndCountAll({
-                        where: {category: category},
-                        order: [['name', 'DESC']], // DESC -> from hight to low
-                        // offset: offset,
-                        limit: 8
-                    });
+            // createdAt
+            let {itemSort, orderSort, limit, page} = req.query
+            page = page || 1
+            limit = limit || 10
+            itemSort = itemSort || 'ASC'
+            orderSort = orderSort || 'createdAt'
+            let offset = page * limit - limit
+            let devices;
             
-            
-                    return res.json(devices)
-                } catch (e) {
-                    next(ApiError.badRequest(e.message))
-                }
+            devices = await Device.findAndCountAll({order: [[itemSort, orderSort]], limit, offset});
+
+            return res.json(devices)
+
         }
-
-    
-
-
-
 
 
 }

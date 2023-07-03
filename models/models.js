@@ -6,7 +6,7 @@ const {DataTypes} = require('sequelize')
 const Device = sequelize.define('device', {
     // Данные товара
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}, 
-    name: {type: DataTypes.STRING, unique: true, allowNull: false}, // Название товара
+    name: {type: DataTypes.STRING, allowNull: false}, // Название товара
     feature: {type: DataTypes.STRING, allowNull: false}, // Хар-ки заказа (Все параметры в тексте + описание)
     img: {type: DataTypes.STRING, allowNull: false}, // Ссылка на файл 
 
