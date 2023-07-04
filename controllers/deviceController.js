@@ -63,13 +63,18 @@ class DeviceController {
                             "value": payV,
                             "currency": 'RUB'
                         },
-                        "payment_method_data": {
-                            "type": 'bank_card'
-                        },
+                        "capture": true,
+                        // "payment_method_data": {
+                        //     "type": 'bank_card'
+                        // },
                         "confirmation": {
                             "type": 'redirect',
-                            "return_url": 'https://kopi34.ru'
-                        }
+                            "return_url": 'https://kopi34.ru/payinfo/'
+                        },
+                        "description": userDescription,
+                        "metadata": {
+                            "order_id": device.id
+                          }
                     };
 
                     fetch('https://api.yookassa.ru/v3/payments',
@@ -86,15 +91,17 @@ class DeviceController {
         }
 
 
-// (3) GET: - http://localhost:5000/api/device/device-view/:id - подтверждение оплаты заказа
+// (3) POST: - http://localhost:5000/api/device/getpay - подтверждение оплаты заказа
         async getPay(req, res, next) { // Done
 
           const headersP = {
-            'Authorization': 'Basic ' + btoa('322722:live_k25GTirGEy6mpQ9SrTNrIVf1XX9spgXAWz96GBER9UQ')
+            'Authorization': 'Basic ' + btoa(process.env.MARKET_ID+':'+process.env.SECRET_KEY_UMONEY)
           };
           
-          const {payinfo} = req.body;
+          const {payinfo, orderid} = req.body;
           
+          await User.update({ status_pay: true }, {where: {id : orderid}});
+
           console.log(payinfo)
           fetch('https://api.yookassa.ru/v3/payments/'+payinfo,
           {
