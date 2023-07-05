@@ -71,7 +71,7 @@ class DeviceController {
                             "type": 'redirect',
                             "return_url": 'https://kopi34.ru/payinfo/'
                         },
-                        "description": userDescription,
+                        "description": device.id,
                         "metadata": {
                             "order_id": device.id
                           }
