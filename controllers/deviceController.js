@@ -121,17 +121,33 @@ class DeviceController {
         async allOrdersAdmin(req, res, next) { // Done
             // createdAt
             
-            let {itemSort, orderSort, limit, page} = req.query
+            let {itemSort, orderSort, limit, page, id, filter} = req.query
             page = page || 1
             limit = limit || 10
             itemSort = itemSort || 'ASC'
             orderSort = orderSort || 'createdAt'
             let offset = page * limit - limit
             let devices;
-            
-            devices = await Device.findAndCountAll({order: [[itemSort, orderSort]], limit, offset});
-            console.log(devices)
+            console.log(id)
+            if(id)
+            if(id == '0'){
+              devices = await Device.findAndCountAll({where: {status_pay : true, name : filter}, order: [[itemSort, orderSort]], limit, offset});
+              
+            }else{
+              devices = await Device.findAndCountAll({where: {id : id}, order: [[itemSort, orderSort]], limit, offset});
+              
+            }
             return res.json(devices)
+        }
+
+        
+// (4) POST: - http://localhost:5000/api/device/delete-item/ - Просмотр всех заказов
+        async deleteOrdersAdmin(req, res, next) { // Done
+            // createdAt
+            const {id} = req.body;
+            const device = await Device.update({ status_done: true }, {where: {id}});
+
+            return res.json(device)
         }
 
 

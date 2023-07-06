@@ -24,6 +24,7 @@ router.post('/', deviceController.homePage)
 // Closed - ADMIN
 // router.post('/create-device/', authMiddleware, checkRoleMiddleware, deviceController.create)
 router.get('/admin/devices-view/', deviceController.allOrdersAdmin)
+router.post('/delete-item/', deviceController.deleteOrdersAdmin)
 
 
 
