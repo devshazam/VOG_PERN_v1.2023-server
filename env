@@ -1,3 +1,4 @@
+# process.env.PORT 
 # IP - Используется для ссылки на хостинг со стороны unisender
 # IP=localhost
 IP=62.217.181.74
@@ -5,11 +6,17 @@ IP=62.217.181.74
 PORT=5000
 
 # postgres - база данных
-DB_NAME=postgres
-DB_USER=postgres
-DB_PASSWORD=12339400
-DB_HOST=localhost
+# DB_NAME=postgres
+# DB_USER=postgres
+# DB_PASSWORD=12339400
+# DB_HOST=localhost
+# DB_PORT=5432
+DB_NAME=default_db
+DB_USER=gen_user
+DB_PASSWORD=6bLzD\f*Ffm~g$
+DB_HOST=5.23.53.237
 DB_PORT=5432
+
 
 # jwt - token
 SECRET_KEY=random_secret_key123
