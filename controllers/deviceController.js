@@ -91,7 +91,7 @@ class DeviceController {
       .then(function (body) {
         return res.json(body);
       }).catch((e) => {
-        return next(ApiError.badRequest('Моя ошибка'))
+        return next(ApiError.badRequest(`Ошибка вызова Юманни на сервере (deviceController.homePage): ${e.code} + ${e.message}`))
       });
   }
 
@@ -119,6 +119,8 @@ class DeviceController {
       })
       .then(function (body) {
         return res.json(body);
+      }).catch((e) => {
+        return next(ApiError.badRequest(`Ошибка вызова Юманни на сервере (deviceController.homePage): ${e.code} + ${e.message}`))
       });
   }
 
