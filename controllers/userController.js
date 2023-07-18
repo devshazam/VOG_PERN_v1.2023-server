@@ -76,6 +76,23 @@ class UserController {
     }
 
 
+    async change(req, res, next) {
+        const {email, phone} = req.body
+
+        try{await User.update({email, phone}, {where: {id : req.user.id}});
+                const user = await User.findOne({where: {id: req.user.id}})
+                const token = generateJwt(user.id, user.email, user.role, user.phone)
+                return res.json({token})
+        }catch(e){
+            return next(
+                ApiError.badRequest(
+                    `Ошибка БД4 на сервере (deviceController.homePage): ${e.code} + ${e.message}`
+                )
+            );
+        }
+    }
+    
+
 
 // // Подтверждение почты при регистрации
 //     async confirmMail(req, res, next) {
