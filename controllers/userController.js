@@ -80,9 +80,17 @@ class UserController {
         const {email, phone} = req.body
 
         try{await User.update({email, phone}, {where: {id : req.user.id}});
-                const user = await User.findOne({where: {id: req.user.id}})
+                try{
+                    const user = await User.findOne({where: {id: req.user.id}})
                 const token = generateJwt(user.id, user.email, user.role, user.phone)
                 return res.json({token})
+                }catch(e){
+                    return next(
+                        ApiError.badRequest(
+                            `Ошибка БД4 на сервере (deviceController.homePage): ${e.code} + ${e.message}`
+                        )
+                    );
+                }
         }catch(e){
             return next(
                 ApiError.badRequest(
