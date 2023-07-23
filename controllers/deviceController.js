@@ -219,6 +219,43 @@ class DeviceController {
       }
         
     }
+
+
+        // (5) POST: - http://localhost:5000/api/device/delete-item/ - Просмотр всех заказов
+        async handleYandexImg(req, res, next) {
+
+        const img = req.files.img;
+        const fileName = uuid.v4() + ".jpg";
+
+
+        fetch("https://cloud-api.yandex.net/v1/disk/resources/upload?path=/sites&overwrite=true", {
+            "Content-Type": "application/json",
+            // сюда нужно вставить Пример: Authorization: OAuth 0c4181a7c2cf4521964a72ff57a34a07
+            Authorization:
+                "Basic " +
+                btoa(
+                    process.env.MARKET_ID + ":" + process.env.SECRET_KEY_UMONEY
+                ),
+
+        }).then(function (res) {
+                return res.json();
+                console.log(res)
+            })
+            .then(function (body) {
+                return res.json(body);
+            })
+            .catch((e) => {
+                return next(
+                    ApiError.badRequest(
+                        `Ошибка вызова Юманни на сервере (deviceController.homePage): ${e.code} + ${e.message}`
+                    )
+                );
+            });
+        // Дальше нужно 
+
+
+
+        }
 }
 
 module.exports = new DeviceController();
