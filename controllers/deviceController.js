@@ -221,7 +221,9 @@ class DeviceController {
     }
 
 
-        // (5) POST: - http://localhost:5000/api/device/delete-item/ - Просмотр всех заказов
+
+
+// (5) POST: - http://localhost:5000/api/device/delete-item/ - Просмотр всех заказов
         async handleYandexImg(req, res, next) {
 
         const img = req.files.img;
