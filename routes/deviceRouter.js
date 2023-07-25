@@ -9,7 +9,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 // Open
 router.post('/', deviceController.homePage) 
-router.post('/yandex', deviceController.handleYandexImg) 
+// router.post('/yandex', deviceController.handleYandexImg) 
 router.post('/getpay', deviceController.getPay) 
 // router.post('/', deviceController.testFirst) 
 // router.get('/device-view/:id', deviceController.getOne) 
