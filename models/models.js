@@ -12,7 +12,7 @@ const Device = sequelize.define('device', {
 
     // Данные клиента
     userDescription: {type: DataTypes.STRING, allowNull: false}, // Имя клиента 
-
+    descriptionText: {type: DataTypes.TEXT, defaultValue: 'без описания'},
     // Готовность
     status_done: {type: DataTypes.BOOLEAN, defaultValue: false}, // Статус готовности - этот статус работники самостоятельно применяют при обработке заказа
     status_pay: {type: DataTypes.BOOLEAN, defaultValue: false}, // Статус оплаченности - статус заноситься при обратной переадресации на сайт после оплаты на стороне платежной системы

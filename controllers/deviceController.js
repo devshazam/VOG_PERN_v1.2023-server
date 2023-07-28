@@ -33,7 +33,7 @@ class DeviceController {
     async homePage(req, res, next) {
         // Done
 
-        const { name, value, description, userId } = req.body;
+        const { name, value, description, descriptionText, userId } = req.body;
 
         const img = req.files.img;
         const fileName = uuid.v4() + ".jpg";
@@ -48,6 +48,7 @@ class DeviceController {
             userDescription: userDescription,
             img: fileName,
             userId,
+            descriptionText
         });
 
         // Send to YOOMONEY
