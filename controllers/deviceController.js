@@ -2,8 +2,11 @@ const uuid = require("uuid");
 const path = require("path");
 const { Device, User } = require("../models/models");
 const ApiError = require("../error/ApiError");
-
+const fs = require('fs')
 const fetch = require("node-fetch");
+
+const { fileUploadCustom } = require("../S3/s3Upload");
+
 
 /*
  * 1. Клиенты
@@ -34,11 +37,28 @@ class DeviceController {
         // Done
 
         const { name, value, description, descriptionText, userId } = req.body;
-
+        //
         const img = req.files.img;
-        const fileName = uuid.v4() + ".jpg";
-        img.mv(path.resolve(__dirname, "..", "static", fileName));
+        const imgName = req.files.img.name;
+        const fileName = uuid.v4() + '_' + imgName ;
+        await img.mv(path.resolve(__dirname, "..", "static", fileName));
+        let fileLocation;
+        try{
+            fileLocation = await fileUploadCustom(fileName);
+        }catch(e){
+            return next(
+                ApiError.internal(
+                    `ERROR:S3_backet ${e.code} + ${e.message}`
+                )
+            );
+        }
+        fs.unlink("static/" + fileName, (err => {
+            if (err) console.log(err);
+            else {
+              console.log("\nDeleted file: example_file.txt");
+            }}));
 
+// return
         const user = await User.findOne({ where: { id: userId } });
         const userDescription = `Имя клиента: ${user.name}; ID-клиента: ${user.id}; Телефон клиента: ${user.phone}; Email клиента: ${user.email};`;
 
@@ -46,7 +66,7 @@ class DeviceController {
             name,
             feature: description,
             userDescription: userDescription,
-            img: fileName,
+            img: fileLocation,
             userId,
             descriptionText
         });
