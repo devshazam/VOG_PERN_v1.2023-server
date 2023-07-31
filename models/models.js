@@ -34,15 +34,40 @@ const User = sequelize.define('user', {
 
 })
 
+const Review = sequelize.define('review', {
+    // Данные товара
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}, 
+    theme: {type: DataTypes.STRING, allowNull: false}, // Название товара
+    description: {type: DataTypes.STRING, allowNull: false},
+}) 
+
+const Goods = sequelize.define('goods', {
+    // Данные товара
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}, 
+    name: {type: DataTypes.STRING, allowNull: false}, // Название товара
+    description: {type: DataTypes.STRING, allowNull: false}, // Хар-ки заказа (Все параметры в тексте + описание)
+    image: {type: DataTypes.STRING, allowNull: false}, // Ссылка на файл 
+    new_price: {type: DataTypes.INTEGER, allowNull: false}, // Новая цена
+    old_price: {type: DataTypes.INTEGER, allowNull: false}, // Старая цена
+    sale: {type: DataTypes.INTEGER, allowNull: false}, // Статус оплаченности 
+
+})
 
 
 User.hasMany(Device)
 Device.belongsTo(User)
 
+User.hasMany(Review)
+Review.belongsTo(User)
+
+User.hasMany(Goods)
+Goods.belongsTo(User)
 
 module.exports = {
     User,
-    Device
+    Device, 
+    Review, 
+    Goods, 
 }
 
 
