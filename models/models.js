@@ -28,7 +28,6 @@ const User = sequelize.define('user', {
     address: {type: DataTypes.STRING, defaultValue: null}, // Адрес
     password: {type: DataTypes.STRING, allowNull: false}, // Пароль 
     role: {type: DataTypes.STRING, defaultValue: "USER"}, // Роль пользователя (USER/ADMIN)
-    
     // Верификация
     status_email: {type: DataTypes.BOOLEAN, defaultValue: false}, // Статус подтверждения почты - на почту приходит пароль. 
 
@@ -50,6 +49,7 @@ const Goods = sequelize.define('goods', {
     new_price: {type: DataTypes.INTEGER, allowNull: false}, // Новая цена
     old_price: {type: DataTypes.INTEGER, allowNull: false}, // Старая цена
     sale: {type: DataTypes.INTEGER, allowNull: false}, // Статус оплаченности 
+    group: {type: DataTypes.STRING, allowNull: false}, // группа товара
 
 })
 
