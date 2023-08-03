@@ -1,8 +1,9 @@
 const uuid = require("uuid");
 const path = require("path");
+const fs = require('fs')
 const { Device, User } = require("../models/models");
 const ApiError = require("../error/ApiError");
-const fs = require('fs')
+
 const fetch = require("node-fetch");
 
 const { fileUploadCustom } = require("../S3/s3Upload");
@@ -34,17 +35,14 @@ class DeviceController {
 
     // (2)  POST - http://localhost:5000/api/device/ - Покупка отдельных товаров с занесением в базу данных
     async homePage(req, res, next) {
-        // Done
-
         const { name, value, description, descriptionText, userId } = req.body;
-        //
-        const img = req.files.img;
-        const imgName = req.files.img.name;
-        const fileName = uuid.v4() + '_' + imgName ;
-        await img.mv(path.resolve(__dirname, "..", "static", fileName));
+        // const img = req.files.img;
+        // const imgName = req.files.img.name;
+        // const fileName = uuid.v4() + '_' + imgName ;
+        // await img.mv(path.resolve(__dirname, "..", "static", fileName));
         let fileLocation;
         try{
-            fileLocation = await fileUploadCustom(fileName);
+            fileLocation = await fileUploadCustom(req.files.img);
         }catch(e){
             return next(
                 ApiError.internal(
@@ -52,11 +50,11 @@ class DeviceController {
                 )
             );
         }
-        fs.unlink("static/" + fileName, (err => {
-            if (err) console.log(err);
-            else {
-              console.log("\nDeleted file: example_file.txt");
-            }}));
+        // fs.unlink("static/" + fileName, (err => {
+        //     if (err) console.log(err);
+        //     else {
+        //       console.log("\nDeleted file: example_file.txt");
+        //     }}));
 
 // return
         const user = await User.findOne({ where: { id: userId } });

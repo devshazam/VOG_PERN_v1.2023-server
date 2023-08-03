@@ -1,6 +1,8 @@
 const S3 = require('aws-sdk/clients/s3')
-
-const fs = require('fs')
+const uuid = require("uuid");
+const path = require("path");
+const fs2 = require('fs')
+const fs = require('fs').promises;
 
 const uploadParams = { Bucket: process.env.BACKET, Key: '', Body: '' } // <--- заменить
 
@@ -14,13 +16,20 @@ const s3 = new S3({
 })
 
 
-const fileUploadCustom = async (fileName) => {
+const fileUploadCustom = async (img) => {
 
-    const stream = fs.createReadStream('static/' + fileName);
+    const imgName = img.name;
+    const fileName = uuid.v4() + '_' + imgName ;
+    await img.mv(path.resolve(__dirname, "..", "static", fileName));
+
+    const stream = fs2.createReadStream('static/' + fileName);
 
     uploadParams.Body = stream 
     uploadParams.Key = fileName
     const data = await s3.upload(uploadParams).promise()
+
+    await fs.unlink("static/" + fileName);
+
     return data.Location;
 
 }

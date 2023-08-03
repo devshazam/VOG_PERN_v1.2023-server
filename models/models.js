@@ -46,9 +46,9 @@ const Goods = sequelize.define('goods', {
     name: {type: DataTypes.STRING, allowNull: false}, // Название товара
     description: {type: DataTypes.STRING, allowNull: false}, // Хар-ки заказа (Все параметры в тексте + описание)
     image: {type: DataTypes.STRING, allowNull: false}, // Ссылка на файл 
-    new_price: {type: DataTypes.INTEGER, allowNull: false}, // Новая цена
-    old_price: {type: DataTypes.INTEGER, allowNull: false}, // Старая цена
-    sale: {type: DataTypes.INTEGER, allowNull: false}, // Статус оплаченности 
+    price: {type: DataTypes.INTEGER, allowNull: false}, // Новая цена
+    // old_price: {type: DataTypes.INTEGER, allowNull: false}, // Старая цена
+    // sale: {type: DataTypes.INTEGER, allowNull: false}, // Статус оплаченности 
     group: {type: DataTypes.STRING, allowNull: false}, // группа товара
 
 })
