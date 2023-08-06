@@ -1,36 +1,72 @@
-const uuid = require("uuid");
-const path = require("path");
 const { Goods } = require("../models/models");
 const ApiError = require("../error/ApiError");
+const { fileUploadCustom } = require("../S3/s3Upload");
 
 class GoodsController {
 
-    // (2)  POST - http://localhost:5000/api/device/ - Покупка отдельных товаров с занесением в базу данных
     async createGoods(req, res, next) {
-        // Done
 
-       
-        const { name, description, image, group} = req.body;
-        console.log(image)
-        return res.json({we:232});
+        const { name, description, group, price, userId } = req.body;
+
+        let fileLocation;
         try{
-            const reviewRes = await Review.create({
-                theme: subject,
-                description: review,
-            });
-             return res.json(reviewRes);
-            
+            fileLocation = await fileUploadCustom(req.files.image, 'goods/'); // вставить 
         }catch(e){
             return next(
-                ApiError.internal(
-                    `Ошибка БД1 (deviceController.allOrdersAdmin): ${e.code} + ${e.message}`
-                )
-            );
-                }
+                ApiError.badRequest(`ERROR:S3_backet ${e.code} + ${e.message}`));}
 
+                console.log(fileLocation)
 
+        const device = await Goods.create({
+            name,
+            description,
+            group,
+            price,
+            image: fileLocation,
+            userId
+        });
+       
+        return res.json(device);
     }
 
+    
+
+    async fetchGoodsList(req, res, next) {
+        let { limit, page, category } = req.query;
+        page = page || 1;
+        limit = limit || 24;
+        let itemSort = "ASC";
+        let orderSort = "createdAt";
+        let offset = page * limit - limit;
+        let devices;
+
+                  try{devices = await Goods.findAndCountAll({
+                    where: { group: category },
+                    order: [[ orderSort, itemSort]],
+                    limit,
+                    offset});
+                  return res.json(devices);
+                }catch(e){
+                      return next(
+                        ApiError.badRequest(
+                            `Ошибка БД1 (deviceController.allOrdersAdmin): ${e.code} + ${e.message}`
+                        )
+                    );
+                }
+    }
+    async fetchOneGoods(req, res, next) {
+        let { id } = req.query;
+                  try{ const goods = await Goods.findOne({where: {id}});
+                  return res.json(goods);
+                }catch(e){
+                      return next(
+                        ApiError.badRequest(
+                            `Ошибка БД1 (deviceController.allOrdersAdmin): ${e.code} + ${e.message}`
+                        )
+                    );
+                }
+    }
+    
 }
 
 module.exports = new GoodsController();

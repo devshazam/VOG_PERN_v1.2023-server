@@ -44,7 +44,7 @@ const Goods = sequelize.define('goods', {
     // Данные товара
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}, 
     name: {type: DataTypes.STRING, allowNull: false}, // Название товара
-    description: {type: DataTypes.STRING, allowNull: false}, // Хар-ки заказа (Все параметры в тексте + описание)
+    description: {type: DataTypes.TEXT, allowNull: false}, // Хар-ки заказа (Все параметры в тексте + описание)
     image: {type: DataTypes.STRING, allowNull: false}, // Ссылка на файл 
     price: {type: DataTypes.INTEGER, allowNull: false}, // Новая цена
     // old_price: {type: DataTypes.INTEGER, allowNull: false}, // Старая цена
