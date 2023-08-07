@@ -66,6 +66,19 @@ class GoodsController {
                     );
                 }
     }
+
+    async deleteOneGoods(req, res, next) {
+        let { id } = req.query;
+                  try{ const goods = await Goods.destroy({where: {id}});
+                  return res.json(goods);
+                }catch(e){
+                      return next(
+                        ApiError.badRequest(
+                            `Ошибка БД1 (deviceController.allOrdersAdmin): ${e.code} + ${e.message}`
+                        )
+                    );
+                }
+    }
     
 }
 

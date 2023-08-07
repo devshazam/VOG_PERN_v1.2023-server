@@ -6,6 +6,7 @@ const goodsController = require('../controllers/goodsController')
 router.post('/', goodsController.createGoods) 
 router.get('/fetch-list', goodsController.fetchGoodsList)
 router.get('/fetch-one', goodsController.fetchOneGoods)
+router.get('/delete-one', goodsController.deleteOneGoods)
 
 
 
