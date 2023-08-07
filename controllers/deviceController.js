@@ -35,14 +35,14 @@ class DeviceController {
 
     // (2)  POST - http://localhost:5000/api/device/ - Покупка отдельных товаров с занесением в базу данных
     async homePage(req, res, next) {
-        const { name, value, description, descriptionText, userId } = req.body;
-
+        const { name, value, description, descriptionText, userId, goodId } = req.body;
+            console.log(goodId)
         let fileLocation;
         try{
             fileLocation = await fileUploadCustom(req.files.img); // вставить 
         }catch(e){
             return next(
-                ApiError.internal(`ERROR:S3_backet ${e.code} + ${e.message}`));}
+                ApiError.internal(`ERROR:S3_backet ${e.code} + ${e.message}`));} 
 
         const user = await User.findOne({ where: { id: userId } });
         const userDescription = `Имя клиента: ${user.name}; ID-клиента: ${user.id}; Телефон клиента: ${user.phone}; Email клиента: ${user.email};`;
@@ -53,7 +53,8 @@ class DeviceController {
             userDescription: userDescription,
             img: fileLocation,
             userId,
-            descriptionText
+            descriptionText,
+            goodId
         });
 
         // Send to YOOMONEY

@@ -17,7 +17,6 @@ const Device = sequelize.define('device', {
     status_done: {type: DataTypes.BOOLEAN, defaultValue: false}, // Статус готовности - этот статус работники самостоятельно применяют при обработке заказа
     status_pay: {type: DataTypes.BOOLEAN, defaultValue: false}, // Статус оплаченности - статус заноситься при обратной переадресации на сайт после оплаты на стороне платежной системы
 
-
 })
 
 const User = sequelize.define('user', {
@@ -62,6 +61,9 @@ Review.belongsTo(User)
 
 User.hasMany(Goods)
 Goods.belongsTo(User)
+
+Goods.hasMany(Device)
+Device.belongsTo(Goods)
 
 module.exports = {
     User,
