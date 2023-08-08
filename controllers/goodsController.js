@@ -81,6 +81,38 @@ class GoodsController {
             );
         }
     }
+    async updateGoods(req, res, next) {
+        const { name, description, group, price, userId, id } = req.body;
+
+        let fileLocation;
+        try {
+            fileLocation = await fileUploadCustom(req.files.image, "goods/"); // вставить
+        } catch (e) {
+            return next(
+                ApiError.badRequest(`ERROR:S3_backet ${e.code} + ${e.message}`)
+            );
+        }
+        try{
+                const goods = await Goods.update({
+                name,
+                description,
+                group,
+                price,
+                image: fileLocation,
+                userId
+            }, {where: {id}});
+            console.log(goods)
+            return res.json({success: true});
+        } catch (error) {
+            return next(
+                ApiError.badRequest(
+                    `Ошибка БД1 (deviceController.allOrdersAdmin): ${error.code} + ${error.message}`
+                )
+            );
+    }
+
+        
+    }
 }
 
 module.exports = new GoodsController();
