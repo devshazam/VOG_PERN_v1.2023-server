@@ -29,19 +29,21 @@ class GoodsController {
         return res.json(device);
     }
 
+
+
     async fetchGoodsList(req, res, next) {
-        let { limit, page, category } = req.query;
+        let { itemSort, orderSort, limit, page, categoryIt } = req.query;
         page = page || 1;
         limit = limit || 24;
-        let itemSort = "ASC";
-        let orderSort = "createdAt";
+        itemSort = itemSort || "createdAt";
+        orderSort = orderSort || "ASC";
         let offset = page * limit - limit;
         let devices;
 
         try {
             devices = await Goods.findAndCountAll({
-                where: { group: category },
-                order: [[orderSort, itemSort]],
+                where: { group: categoryIt },
+                order: [[itemSort, orderSort]],
                 limit,
                 offset,
             });
@@ -54,6 +56,10 @@ class GoodsController {
             );
         }
     }
+
+
+
+
     async fetchOneGoods(req, res, next) {
         let { id } = req.query;
         try {
