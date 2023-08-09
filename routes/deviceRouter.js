@@ -11,6 +11,8 @@ const authMiddleware = require('../middleware/authMiddleware');
 router.post('/', deviceController.homePage) 
 // router.post('/yandex', deviceController.handleYandexImg) 
 router.post('/getpay', deviceController.getPay) 
+router.post('/basket', deviceController.getBasketItems) 
+
 // router.post('/', deviceController.testFirst) 
 // router.get('/device-view/:id', deviceController.getOne) 
 // router.get('/category/:category/:page', deviceController.getAll) 

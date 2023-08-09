@@ -11,7 +11,7 @@ class GoodsController {
             fileLocation = await fileUploadCustom(req.files.image, "goods/"); // вставить
         } catch (e) {
             return next(
-                ApiError.badRequest(`ERROR:S3_backet ${e.code} + ${e.message}`)
+                ApiError.internal(`dev_server: ${e.code} + ${e.message}`)
             );
         }
 
@@ -50,8 +50,8 @@ class GoodsController {
             return res.json(devices);
         } catch (e) {
             return next(
-                ApiError.badRequest(
-                    `Ошибка БД1 (deviceController.allOrdersAdmin): ${e.code} + ${e.message}`
+                ApiError.internal(
+                    `dev_server: ${e.code} + ${e.message}`
                 )
             );
         }
@@ -67,8 +67,8 @@ class GoodsController {
             return res.json(goods);
         } catch (e) {
             return next(
-                ApiError.badRequest(
-                    `Ошибка БД1 (deviceController.allOrdersAdmin): ${e.code} + ${e.message}`
+                ApiError.internal(
+                    `dev_server: ${e.code} + ${e.message}`
                 )
             );
         }
@@ -81,8 +81,8 @@ class GoodsController {
             return res.json(goods);
         } catch (e) {
             return next(
-                ApiError.badRequest(
-                    `Ошибка БД1 (deviceController.allOrdersAdmin): ${e.code} + ${e.message}`
+                ApiError.internal(
+                    `dev_server: ${e.code} + ${e.message}`
                 )
             );
         }
@@ -95,7 +95,7 @@ class GoodsController {
             fileLocation = await fileUploadCustom(req.files.image, "goods/"); // вставить
         } catch (e) {
             return next(
-                ApiError.badRequest(`ERROR:S3_backet ${e.code} + ${e.message}`)
+                ApiError.internal(`dev_server: ${e.code} + ${e.message}`)
             );
         }
         try{
@@ -111,8 +111,8 @@ class GoodsController {
             return res.json({success: true});
         } catch (error) {
             return next(
-                ApiError.badRequest(
-                    `Ошибка БД1 (deviceController.allOrdersAdmin): ${error.code} + ${error.message}`
+                ApiError.internal(
+                    `dev_server: ${error.code} + ${error.message}`
                 )
             );
     }

@@ -46,7 +46,7 @@ class UserController {
         // Вставка паролейй в БД
             const user = await User.create({name, phone, email, role, password: hashPassword})
         // Генерирование токена
-            const token = generateJwt(user.id, user.email, user.role, user.phone)
+            const token = generateJwt(user.id, user.email, user.role, user.phone, req.user.basket)
             return res.json({token})
     }
 
@@ -64,14 +64,14 @@ class UserController {
         if (!comparePassword) {
             return next(ApiError.internal('Указан неверный пароль'))
         }
-        const token = generateJwt(user.id, user.email, user.role, user.phone)
+        const token = generateJwt(user.id, user.email, user.role, user.phone, req.user.basket)
         return res.json({token})
     }
 
 
     // Проверка авторизации ползователя при обращении к сайту в файле APP.js
     async check(req, res, next) {
-        const token = generateJwt(req.user.id, req.user.email, req.user.role, req.user.phone)
+        const token = generateJwt(req.user.id, req.user.email, req.user.role, req.user.phone, req.user.basket)
         return res.json({token})
     }
 

@@ -9,9 +9,9 @@ const Device = sequelize.define('device', {
     name: {type: DataTypes.STRING, allowNull: false}, // Название товара
     feature: {type: DataTypes.STRING, allowNull: false}, // Хар-ки заказа (Все параметры в тексте + описание)
     img: {type: DataTypes.STRING, allowNull: false}, // Ссылка на файл 
-
+    price: {type: DataTypes.INTEGER, allowNull: false}, // Стоимость товара
     // Данные клиента
-    userDescription: {type: DataTypes.STRING, allowNull: false}, // Имя клиента 
+    userDescription: {type: DataTypes.STRING, allowNull: false, defaultValue: 'без описания'}, // Имя клиента 
     descriptionText: {type: DataTypes.TEXT, defaultValue: 'без описания'},
     // Готовность
     status_done: {type: DataTypes.BOOLEAN, defaultValue: false}, // Статус готовности - этот статус работники самостоятельно применяют при обработке заказа
@@ -28,6 +28,7 @@ const User = sequelize.define('user', {
     password: {type: DataTypes.STRING, allowNull: false}, // Пароль 
     role: {type: DataTypes.STRING, defaultValue: "USER"}, // Роль пользователя (USER/ADMIN)
     // Верификация
+    basket: {type: DataTypes.INTEGER, defaultValue: 0}, // кол-во товаров в корзине
     status_email: {type: DataTypes.BOOLEAN, defaultValue: false}, // Статус подтверждения почты - на почту приходит пароль. 
 
 })
