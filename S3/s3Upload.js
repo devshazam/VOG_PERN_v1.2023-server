@@ -35,4 +35,11 @@ const fileUploadCustom = async (img, pathName = '') => {
 
 }
 
-module.exports = { fileUploadCustom };
+const fileDelete = async (object) => {
+
+    const res = await s3.deleteObject(object).promise()
+    return res;
+
+}
+
+module.exports = { fileUploadCustom, fileDelete };

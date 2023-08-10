@@ -1,6 +1,10 @@
 const { Goods } = require("../models/models");
 const ApiError = require("../error/ApiError");
-const { fileUploadCustom } = require("../S3/s3Upload");
+const { fileUploadCustom, fileDelete } = require("../S3/s3Upload");
+const uuid = require("uuid");
+const path = require("path");
+const fs = require('fs')
+const xlsx = require('node-xlsx');
 
 class GoodsController {
     async createGoods(req, res, next) {
@@ -77,7 +81,14 @@ class GoodsController {
     async deleteOneGoods(req, res, next) {
         let { id } = req.query;
         try {
+            const getOneGoods = await Goods.findOne({ where: { id } });
+            let mid1 =  getOneGoods.image.split("//")[1].split("/");
+            let delObj = {Bucket: mid1[1]+'/'+mid1[2], Key: mid1[3]};
             const goods = await Goods.destroy({ where: { id } });
+            if(goods === 1){
+                const mid2 = await fileDelete(delObj);
+                console.log(mid2)
+            }
             return res.json(goods);
         } catch (e) {
             return next(
@@ -92,13 +103,10 @@ class GoodsController {
 
         let fileLocation;
         try {
+            const getOneGoods = await Goods.findOne({ where: { id } });
+            
             fileLocation = await fileUploadCustom(req.files.image, "goods/"); // вставить
-        } catch (e) {
-            return next(
-                ApiError.badRequest(`ERROR:S3_backet ${e.code} + ${e.message}`)
-            );
-        }
-        try{
+  
                 const goods = await Goods.update({
                 name,
                 description,
@@ -107,7 +115,17 @@ class GoodsController {
                 image: fileLocation,
                 userId
             }, {where: {id}});
-            console.log(goods)
+            console.log(1, typeof goods)
+
+            if(goods[0] === 1){
+
+                let mid1 =  getOneGoods.image.split("//")[1].split("/");
+                console.log(mid1)
+                let delObj = {Bucket: mid1[1]+'/'+mid1[2], Key: mid1[3]};
+                const mid2 = await fileDelete(delObj);
+                console.log(mid2)
+            }
+
             return res.json({success: true});
         } catch (error) {
             return next(
@@ -118,6 +136,30 @@ class GoodsController {
     }
 
         
+    }
+
+    async parceXls(req, res, next) {
+        try {const img = req.files.img
+            console.log(req.files.img.name)
+            
+            const fileName = uuid.v4() + img.name;
+            await img.mv(path.resolve(__dirname, "..", "static", fileName));
+
+console.log(`${__dirname}/static/${fileName}`)
+            const workSheetsFromFile = xlsx.parse(`${__dirname}/../static/${fileName}`);
+
+            console.log(workSheetsFromFile)
+            // await fs.promises.unlink("static/" + fileName);
+
+
+            return res.json({workSheetsFromFile});
+        } catch (e) {
+            return next(
+                ApiError.badRequest(
+                    `Ошибка БД1 (deviceController.allOrdersAdmin): ${e.code} + ${e.message}`
+                )
+            );
+        }
     }
 }
 
