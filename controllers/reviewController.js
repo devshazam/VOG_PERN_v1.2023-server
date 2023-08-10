@@ -5,7 +5,7 @@ const ApiError = require("../error/ApiError");
 
 class ReviewController {
 
-    // (2)  POST - http://localhost:5000/api/device/ - Покупка отдельных товаров с занесением в базу данных
+    // создание отзыва клиента
     async createReview(req, res, next) {
         // Done
         const { subject, review } = req.body;
@@ -19,7 +19,7 @@ class ReviewController {
         }catch(e){
             return next(
                 ApiError.internal(
-                    `Ошибка БД1 (deviceController.allOrdersAdmin): ${e.code} + ${e.message}`
+                    `dev_server: ${e.code} + ${e.message}`
                 )
             );
                 }
