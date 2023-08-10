@@ -9,24 +9,11 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 // Open
 router.post('/', deviceController.homePage) 
-// router.post('/yandex', deviceController.handleYandexImg) 
 router.post('/getpay', deviceController.getPay) 
 router.post('/basket', deviceController.getBasketItems) 
-
-// router.post('/', deviceController.testFirst) 
-// router.get('/device-view/:id', deviceController.getOne) 
-// router.get('/category/:category/:page', deviceController.getAll) 
+router.post('/pay-basket-list', deviceController.payBasketList) 
 
 
-// Closed - USER
-// router.post('/create-device/', authMiddleware, deviceController.create)
-// router.get('/delete-device/:id/', authMiddleware, deviceController.delete)
-// router.get('/user-devices/', authMiddleware, deviceController.deviceListUser)
-// router.post('/change/:id/', authMiddleware, deviceController.change) 
-
-
-// Closed - ADMIN
-// router.post('/create-device/', authMiddleware, checkRoleMiddleware, deviceController.create)
 router.get('/admin/devices-view/', deviceController.allOrdersAdmin)
 router.post('/delete-item/', deviceController.deleteOrdersAdmin)
 

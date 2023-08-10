@@ -4,24 +4,14 @@ const jwt = require('jsonwebtoken')
 const {User} = require('../models/models')
 const uuid = require('uuid');
 
-const generateJwt = (id, email, role, phone) => {
+const generateJwt = (id, email, role, phone, basket) => {
     return jwt.sign(
-        {id, email, role, phone},
+        {id, email, role, phone, basket},
         process.env.SECRET_KEY,
         {expiresIn: '24h'}
     )
 }
 
-
-/*
-* USER + ADMIN
-*   1. Регистрация
-*   2. Вход
-*       Добавить после:
-*           1. Личный кабинет (страница заказов + стрница замены контактов)
-*
-*
-*/
 
 class UserController {
 
@@ -46,7 +36,7 @@ class UserController {
         // Вставка паролейй в БД
             const user = await User.create({name, phone, email, role, password: hashPassword})
         // Генерирование токена
-            const token = generateJwt(user.id, user.email, user.role, user.phone, req.user.basket)
+            const token = generateJwt(user.id, user.email, user.role, user.phone, user.basket)
             return res.json({token})
     }
 
@@ -64,7 +54,7 @@ class UserController {
         if (!comparePassword) {
             return next(ApiError.internal('Указан неверный пароль'))
         }
-        const token = generateJwt(user.id, user.email, user.role, user.phone, req.user.basket)
+        const token = generateJwt(user.id, user.email, user.role, user.phone, user.basket)
         return res.json({token})
     }
 
@@ -82,7 +72,7 @@ class UserController {
         try{await User.update({email, phone}, {where: {id : req.user.id}});
                 try{
                     const user = await User.findOne({where: {id: req.user.id}})
-                const token = generateJwt(user.id, user.email, user.role, user.phone)
+                const token = generateJwt(user.id, user.email, user.role, user.phone, user.basket)
                 return res.json({token})
                 }catch(e){
                     return next(

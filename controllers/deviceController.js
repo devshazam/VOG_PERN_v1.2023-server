@@ -141,11 +141,10 @@ class DeviceController {
     }
 
 
-    // оплата товаров в корзине TODO
-    async payBasketOrder(req, res, next) {
-
+    // оплата товаров в корзине 
+    async payBasketList(req, res, next) {
+                const { value } = req.body;        
                // Send to YOOMONEY
-               const payV = String(value);
                const IdempotenceKey = uuid.v4();
                const headersP = {
                    "Content-Type": "application/json",
@@ -159,7 +158,7 @@ class DeviceController {
                };
                const inputBodyP = {
                    amount: {
-                       value: payV,
+                       value: String(value),
                        currency: "RUB",
                    },
                    capture: true,
@@ -197,7 +196,7 @@ class DeviceController {
     }
 
 
-    // оповещение о статусе оплаты юмани
+    // оповещение о статусе оплаты юмани TODO - обнуление карзины юзера + 
     async getPay(req, res, next) {
         // Done
 
