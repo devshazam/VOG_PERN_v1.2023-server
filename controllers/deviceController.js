@@ -13,16 +13,13 @@ class DeviceController {
     // Создание одного заказа для карзины клиента
     async homePage(req, res, next) {
         const { name, value, description, descriptionText, userId, goodId } = req.body;
-
         try{
             const fileLocation = await fileUploadCustom(req.files.img); // вставить 
             const userMid = await User.findOne({where: {id : userId}});
             await User.update({ basket: userMid.basket + 1 }, { where: { id: userId } });
-
             const device = await Device.create({
                 name,
                 feature: description,
-                userDescription: userDescription,
                 img: fileLocation,
                 userId,
                 descriptionText,
@@ -31,8 +28,8 @@ class DeviceController {
             });
             return res.json(device);
         }catch(e){
-                    return next(
-                        ApiError.internal(`dev_server: ${e.code} + ${e.message}`));}   
+            return next(
+                ApiError.internal(`dev_server: ${e.code} + ${e.message}`));}   
     }
 
 

@@ -11,7 +11,6 @@ const Device = sequelize.define('device', {
     img: {type: DataTypes.STRING, allowNull: false}, // Ссылка на файл 
     price: {type: DataTypes.INTEGER, allowNull: false}, // Стоимость товара
     // Данные клиента
-    userDescription: {type: DataTypes.STRING, allowNull: false, defaultValue: 'без описания'}, // Имя клиента 
     descriptionText: {type: DataTypes.TEXT, defaultValue: 'без описания'},
     // Готовность
     status_done: {type: DataTypes.BOOLEAN, defaultValue: false}, // Статус готовности - этот статус работники самостоятельно применяют при обработке заказа
@@ -47,6 +46,7 @@ const Goods = sequelize.define('goods', {
     description: {type: DataTypes.TEXT, allowNull: false}, // Хар-ки заказа (Все параметры в тексте + описание)
     image: {type: DataTypes.STRING, allowNull: false}, // Ссылка на файл 
     price: {type: DataTypes.INTEGER, allowNull: false}, // Новая цена
+    artikul: {type: DataTypes.INTEGER}, // артикул товара
     // old_price: {type: DataTypes.INTEGER, allowNull: false}, // Старая цена
     // sale: {type: DataTypes.INTEGER, allowNull: false}, // Статус оплаченности 
     group: {type: DataTypes.STRING, allowNull: false}, // группа товара
