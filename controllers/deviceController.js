@@ -9,23 +9,39 @@ const { fileUploadCustom } = require("../S3/s3Upload");
 
 
 class DeviceController {
-
     // Создание одного заказа для карзины клиента
     async homePage(req, res, next) {
         const { name, value, description, descriptionText, userId, goodId } = req.body;
+        console.log( typeof name, name, typeof  value, value, typeof description, description, typeof descriptionText, descriptionText, typeof userId, userId, typeof goodId, goodId)
+        
+        return res.json({ name, value, description, descriptionText, userId, goodId });
         try{
-            const fileLocation = await fileUploadCustom(req.files.img); // вставить 
-            const userMid = await User.findOne({where: {id : userId}});
-            await User.update({ basket: userMid.basket + 1 }, { where: { id: userId } });
-            const device = await Device.create({
-                name,
-                feature: description,
-                img: fileLocation,
-                userId,
-                descriptionText,
-                goodId, 
-                price: +value
-            });
+            // const fileLocation = await fileUploadCustom(req.files.img); // вставить 
+            // const userMid = await User.findOne({where: {id : userId}});
+            // await User.update({ basket: userMid.basket + 1 }, { where: { id: userId } });
+            let device;
+            console.log(goodId)
+            if(goodId !== null){
+                device = await Device.create({
+                    name,
+                    feature: description,
+                    img: fileLocation,
+                    userId,
+                    descriptionText,
+                    goodId, 
+                    price: +value
+                });
+            }else{
+                console.log(goodId)
+                device = await Device.create({
+                    name,
+                    feature: description,
+                    img: fileLocation,
+                    userId,
+                    descriptionText,
+                    price: +value
+                });
+            }
             return res.json(device);
         }catch(e){
             return next(

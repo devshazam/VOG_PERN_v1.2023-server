@@ -9,7 +9,7 @@ const Device = sequelize.define('device', {
     name: {type: DataTypes.STRING, allowNull: false}, // Название товара
     feature: {type: DataTypes.STRING, allowNull: false}, // Хар-ки заказа (Все параметры в тексте + описание)
     img: {type: DataTypes.STRING, allowNull: false}, // Ссылка на файл 
-    price: {type: DataTypes.INTEGER, allowNull: false}, // Стоимость товара
+    price: {type: DataTypes.NUMERIC, allowNull: false}, // Стоимость товара
     // Данные клиента
     descriptionText: {type: DataTypes.TEXT, defaultValue: 'без описания'},
     // Готовность
