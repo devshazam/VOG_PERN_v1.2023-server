@@ -242,6 +242,25 @@ class DeviceController {
             });
     }
 
+    
+        // получить все заказы корзины клиента
+        async reciveBasketCount(req, res, next) {
+            const { id } = req.body;
+            try{
+                const numberBasket = await Device.count({
+                    where: { status_pay: false, userId: +id }
+                });
+                return res.json(numberBasket);
+            }catch(e){
+                return next(
+                    ApiError.internal(
+                        `dev_server: ${e.code} + ${e.message}`
+                    )
+                );
+            }
+            
+        }
+
 
 }
 

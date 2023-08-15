@@ -59,9 +59,7 @@ class GoodsController {
                 )
             );
         }
-    }
-
-
+    }   
 
 
     async fetchOneGoods(req, res, next) {

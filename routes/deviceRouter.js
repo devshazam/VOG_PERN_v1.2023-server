@@ -12,6 +12,7 @@ router.post('/', deviceController.homePage)
 router.post('/getpay', deviceController.getPay) 
 router.post('/basket', deviceController.getBasketItems) 
 router.post('/pay-basket-list', deviceController.payBasketList) 
+router.post('/recive-basket-count', deviceController.reciveBasketCount) 
 
 
 router.get('/admin/devices-view/', deviceController.allOrdersAdmin)
