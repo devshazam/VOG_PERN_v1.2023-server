@@ -17,6 +17,7 @@ router.post('/recive-basket-count', deviceController.reciveBasketCount)
 
 router.get('/admin/devices-view/', deviceController.allOrdersAdmin)
 router.post('/delete-item/', deviceController.deleteOrdersAdmin)
+router.post('/delete-basket-item/', deviceController.deleteOneItem)
 
 
 

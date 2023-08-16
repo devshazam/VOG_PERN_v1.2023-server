@@ -5,7 +5,7 @@ const fetch = require("node-fetch");
 
 const { Device, User } = require("../models/models");
 const ApiError = require("../error/ApiError");
-const { fileUploadCustom } = require("../S3/s3Upload");
+const { fileUploadCustom, fileDelete } = require("../S3/s3Upload");
 
 
 class DeviceController {
@@ -14,7 +14,7 @@ class DeviceController {
         const { name, value, description, descriptionText, userId, goodId } = req.body;
 
         try{
-            const fileLocation = await fileUploadCustom(req.files.img); // вставить 
+            const fileLocation = await fileUploadCustom(req.files.img, "devices/"); // вставить 
             let device;
             if(+goodId === 0){
                 device = await Device.create({
@@ -130,6 +130,33 @@ class DeviceController {
       }
         
     }
+
+
+        // удвалить один заказ
+        async deleteOneItem(req, res, next) {
+
+            const { id } = req.body;
+            try{
+                const getOneGoods = await Device.findOne({ where: { id } });
+                let mid1 =  getOneGoods.img.split("//")[1].split("/");
+                console.log(mid1)
+                let delObj = {Bucket: mid1[1]+'/'+mid1[2], Key: mid1[3]};
+                const goods = await Device.destroy({ where: { id } });
+                if(goods === 1){
+                    const mid2 = await fileDelete(delObj);
+                    console.log(mid2)
+                }
+                return res.json(goods);
+          }catch(e){
+            return next(
+              ApiError.internal(
+                `dev_server: ${e.code} + ${e.message}`
+              )
+            );
+          }
+            
+        }
+
 
 
     // получить все заказы корзины клиента

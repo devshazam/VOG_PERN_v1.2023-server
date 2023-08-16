@@ -9,6 +9,7 @@ router.post('/parce-xls', goodsController.parceXls)
 router.get('/fetch-list', goodsController.fetchGoodsList)
 router.get('/fetch-one', goodsController.fetchOneGoods)
 router.get('/delete-one', goodsController.deleteOneGoods)
+router.get('/fetch-xsl-file', goodsController.buildXls)
 
 
 

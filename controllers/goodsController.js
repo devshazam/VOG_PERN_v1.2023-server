@@ -141,6 +141,29 @@ class GoodsController {
         
     }
 
+
+
+
+
+    async buildXls(req, res, next) {
+        try {
+            const data = await Goods.findAll()
+            var buffer = xlsx.build([{name: 'mySheetName', data: data}]);
+            await buffer.mv(path.resolve(__dirname, "..", "static", fileName));
+            return res.json({q: 1});
+        } catch (e) {
+            return next(
+                ApiError.badRequest(
+                    `Ошибка БД1 (deviceController.allOrdersAdmin): ${e.code} + ${e.message}`
+                )
+            );
+        }
+    }
+
+
+
+
+
     async parceXls(req, res, next) {
         try {const img = req.files.img
             console.log(req.files.img.name)
