@@ -148,6 +148,20 @@ class GoodsController {
     async buildXls(req, res, next) {
         try {
             const data = await Goods.findAll()
+            let xlsArray;
+
+            for (let i = 0; i < data.length; i++){
+             console.log(data[i].id)   
+             // Не правильно!
+                xlsArray[i][0] = data[i].artikul;
+                xlsArray[i][1] = data[i].name;
+                xlsArray[i][2] = data[i].price;
+                xlsArray[i][3] = data[i].id;
+                console.log(xlsArray)
+            }
+
+console.log(xlsArray)
+
             var buffer = xlsx.build([{name: 'mySheetName', data: data}]);
             await buffer.mv(path.resolve(__dirname, "..", "static", fileName));
             return res.json({q: 1});

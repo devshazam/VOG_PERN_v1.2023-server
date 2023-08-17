@@ -9,7 +9,7 @@ const Device = sequelize.define('device', {
     name: {type: DataTypes.STRING, allowNull: false}, // Название товара
     feature: {type: DataTypes.STRING, allowNull: false}, // Хар-ки заказа (Все параметры в тексте + описание)
     img: {type: DataTypes.STRING, allowNull: false}, // Ссылка на файл 
-    price: {type: DataTypes.NUMERIC, allowNull: false}, // Стоимость товара
+    price: {type: DataTypes.STRING, allowNull: false}, // Стоимость товара
     // Данные клиента
     descriptionText: {type: DataTypes.TEXT, defaultValue: 'без описания'},
     // Готовность
@@ -26,8 +26,6 @@ const User = sequelize.define('user', {
     address: {type: DataTypes.STRING, defaultValue: null}, // Адрес
     password: {type: DataTypes.STRING, allowNull: false}, // Пароль 
     role: {type: DataTypes.STRING, defaultValue: "USER"}, // Роль пользователя (USER/ADMIN)
-    // Верификация
-    basket: {type: DataTypes.INTEGER, defaultValue: 0}, // кол-во товаров в корзине
     status_email: {type: DataTypes.BOOLEAN, defaultValue: false}, // Статус подтверждения почты - на почту приходит пароль. 
 
 })
@@ -36,7 +34,7 @@ const Review = sequelize.define('review', {
     // Данные товара
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}, 
     theme: {type: DataTypes.STRING, allowNull: false}, // Название товара
-    description: {type: DataTypes.STRING, allowNull: false},
+    description: {type: DataTypes.TEXT, allowNull: false},
 }) 
 
 const Goods = sequelize.define('goods', {
@@ -45,10 +43,8 @@ const Goods = sequelize.define('goods', {
     name: {type: DataTypes.STRING, allowNull: false}, // Название товара
     description: {type: DataTypes.TEXT, allowNull: false}, // Хар-ки заказа (Все параметры в тексте + описание)
     image: {type: DataTypes.STRING, allowNull: false}, // Ссылка на файл 
-    price: {type: DataTypes.INTEGER, allowNull: false}, // Новая цена
-    artikul: {type: DataTypes.INTEGER}, // артикул товара
-    // old_price: {type: DataTypes.INTEGER, allowNull: false}, // Старая цена
-    // sale: {type: DataTypes.INTEGER, allowNull: false}, // Статус оплаченности 
+    price: {type: DataTypes.STRING, allowNull: false}, // Новая цена
+    artikul: {type: DataTypes.STRING}, // артикул товара
     group: {type: DataTypes.STRING, allowNull: false}, // группа товара
 
 })

@@ -1,5 +1,3 @@
-const uuid = require("uuid");
-const path = require("path");
 const { Review } = require("../models/models");
 const ApiError = require("../error/ApiError");
 
@@ -7,15 +5,14 @@ class ReviewController {
 
     // создание отзыва клиента
     async createReview(req, res, next) {
-        // Done
-        const { subject, review } = req.body;
+        const { subject, review, userId } = req.body;
         try{
-            const reviewRes = await Review.create({
+            const reviewResult = await Review.create({
                 theme: subject,
                 description: review,
+                userId
             });
-             return res.json(reviewRes);
-            
+             return res.json(reviewResult);
         }catch(e){
             return next(
                 ApiError.internal(
@@ -23,8 +20,6 @@ class ReviewController {
                 )
             );
                 }
-
-
     }
 
 }
