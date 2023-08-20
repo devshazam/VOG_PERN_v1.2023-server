@@ -12,7 +12,6 @@ class DeviceController {
     // Создание одного заказа для карзины клиента
     async homePage(req, res, next) {
         const { name, value, description, descriptionText, userId, goodId } = req.body;
-
         try{
             const fileLocation = await fileUploadCustom(req.files.img, "devices/"); // вставить 
             let device;
@@ -37,7 +36,6 @@ class DeviceController {
                 });
             }
             const basketDevices = await Device.count({where: { status_pay: false, userId }});
-            console.log(basketDevices)
             await User.update({ basket:  +basketDevices}, { where: { id: userId } });
             return res.json(device);
         }catch(e){
