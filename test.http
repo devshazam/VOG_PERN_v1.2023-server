@@ -1,0 +1,15 @@
+GET http://localhost:5000/
+
+###
+
+POST http://localhost:5000/api/device/   HTTP/1.1
+content-type: application/json
+User-Agent: rest-client
+Accept-Language: en-GB,en-US;q=0.8,en;q=0.6,zh-CN;q=0.4
+
+{
+    "name": "sample",
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}
+
+
