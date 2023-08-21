@@ -1,7 +1,3 @@
-# process.env.PORT 
-# IP - Используется для ссылки на хостинг со стороны unisender
-# IP=localhost
-IP=62.217.181.74
 
 PORT=5000
 
@@ -29,7 +25,6 @@ UNISENDER_API_KEY=65wsww4y9dhybukuf6qkz6sp6p8oxzsx988tgr8y
 # ЮМАНИ
 MARKET_ID=322722
 SECRET_KEY_UMONEY=live_k25GTirGEy6mpQ9SrTNrIVf1XX9spgXAWz96GBER9UQ
-
     
 # s3 BACKET
 BACKET=355c3500-52b34360-7836-4f05-83ab-a191e5d377a9
