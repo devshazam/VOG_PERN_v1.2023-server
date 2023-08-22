@@ -49,7 +49,6 @@ class DeviceController {
     // список заказов для администрауции
     async allOrdersAdmin(req, res, next) {
         let { itemSort, orderSort, limit, page, id, filter, userId } = req.query;
-        console.log(userId)
         page = page || 1;
         limit = limit || 10;
         itemSort = itemSort || "ASC";

@@ -148,22 +148,32 @@ class GoodsController {
     async buildXls(req, res, next) {
         try {
             const data = await Goods.findAll()
-            let xlsArray;
+            let xlsArray = []; 
 
             for (let i = 0; i < data.length; i++){
-             console.log(data[i].id)   
-             // Не правильно!
-                xlsArray[i][0] = data[i].artikul;
-                xlsArray[i][1] = data[i].name;
-                xlsArray[i][2] = data[i].price;
-                xlsArray[i][3] = data[i].id;
-                console.log(xlsArray)
+                xlsArray[i] = [];
+
+                    xlsArray[i].push(data[i].artikul)
+                    xlsArray[i].push(data[i].name)
+                    xlsArray[i].push(data[i].price)
+                    xlsArray[i].push(data[i].id)
+
             }
 
 console.log(xlsArray)
 
-            var buffer = xlsx.build([{name: 'mySheetName', data: data}]);
-            await buffer.mv(path.resolve(__dirname, "..", "static", fileName));
+            var buffer = xlsx.build([{name: 'mySheetName', data: xlsArray}]);
+            console.log(buffer)
+            fs.writeFile("test.xlsx", buffer,  "binary", function(err) {
+                if(err) {
+                    console.log(err);
+                } else {
+                    console.log("The file was saved!");
+                }
+            });
+            return
+
+            await buffer.mv(path.resolve(__dirname, "..", "static", "qweetr.xls"));
             return res.json({q: 1});
         } catch (e) {
             return next(

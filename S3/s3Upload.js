@@ -22,7 +22,7 @@ const fileUploadCustom = async (img, pathName = '') => {
     const imgName = img.name;
     const fileName = uuid.v4() + '_' + imgName ;
     await img.mv(path.resolve(__dirname, "..", "static", fileName));
-
+ 
     const stream = fs.createReadStream('static/' + fileName);
 
     uploadParams.Body = stream 
