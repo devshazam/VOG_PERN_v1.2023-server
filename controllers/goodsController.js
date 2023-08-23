@@ -1,14 +1,15 @@
 const { Goods } = require("../models/models");
 const ApiError = require("../error/ApiError");
-const { fileUploadCustom, fileDelete } = require("../S3/s3Upload");
+const { fileUploadCustom, fileDelete, xlsxUploadCustom } = require("../S3/s3Upload");
 const uuid = require("uuid");
 const path = require("path");
+
 const fs = require('fs')
 const xlsx = require('node-xlsx');
 
 class GoodsController {
     async createGoods(req, res, next) {
-        const { name, description, group, price, userId } = req.body;
+        const { name, description, group, price, userId, artikul } = req.body;
 
         let fileLocation;
         try {
@@ -27,7 +28,8 @@ class GoodsController {
             group,
             price,
             image: fileLocation,
-            userId
+            userId, 
+            artikul
         });
 
         return res.json(device);
@@ -152,29 +154,16 @@ class GoodsController {
 
             for (let i = 0; i < data.length; i++){
                 xlsArray[i] = [];
-
-                    xlsArray[i].push(data[i].artikul)
                     xlsArray[i].push(data[i].name)
+                    xlsArray[i].push(data[i].artikul)
                     xlsArray[i].push(data[i].price)
                     xlsArray[i].push(data[i].id)
-
             }
 
-console.log(xlsArray)
+            var buffer = xlsx.build([{name: 'GoodsList', data: xlsArray}]);
+            const fileLocation = await xlsxUploadCustom(buffer);
 
-            var buffer = xlsx.build([{name: 'mySheetName', data: xlsArray}]);
-            console.log(buffer)
-            fs.writeFile("test.xlsx", buffer,  "binary", function(err) {
-                if(err) {
-                    console.log(err);
-                } else {
-                    console.log("The file was saved!");
-                }
-            });
-            return
-
-            await buffer.mv(path.resolve(__dirname, "..", "static", "qweetr.xls"));
-            return res.json({q: 1});
+            return res.json({fileLocation});
         } catch (e) {
             return next(
                 ApiError.badRequest(

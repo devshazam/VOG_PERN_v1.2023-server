@@ -46,13 +46,13 @@ class DeviceController {
 
 
 
-    // список заказов для администрауции
+
     async allOrdersAdmin(req, res, next) {
         let { itemSort, orderSort, limit, page, id, filter, userId } = req.query;
         page = page || 1;
         limit = limit || 10;
-        itemSort = itemSort || "ASC";
-        orderSort = orderSort || "createdAt";
+        itemSort = itemSort || "createdAt";
+        orderSort = orderSort || "ASC";
         let offset = page * limit - limit;
         let devices;
         // console.log(id);
@@ -285,6 +285,29 @@ class DeviceController {
             
         }
 
+
+        async getUserGoods(req, res, next) {
+            let { page, userId } = req.body;
+            console.log(page, userId)
+            let limit = 10;
+            let orderSort = "ASC";
+            let itemSort = "createdAt";
+            let offset = page * limit - limit;
+                    try{
+                        const devices = await Device.findAndCountAll({
+                        where: { userId, status_pay: true },
+                        order: [[itemSort, orderSort]],
+                        limit,
+                        offset});
+                      return res.json(devices);
+                    }catch(e){
+                          return next(
+                            ApiError.internal(
+                                `dev_server: ${e.code} + ${e.message}`
+                            )
+                        );
+                    }
+                }
 
 }
 

@@ -35,6 +35,30 @@ const fileUploadCustom = async (img, pathName = '') => {
 
 }
 
+const xlsxUploadCustom = async (buffer) => {
+
+    const uniqFileName = uuid.v4() + '.xlsx' ;
+
+    fs.writeFile(__dirname + "/../"+ "static/"+uniqFileName, buffer, function(err) {
+        if(err) {
+            console.log(err);
+        } else {
+            console.log("The file was saved!");
+        }
+    });
+    
+    const stream = fs.createReadStream(__dirname + "/../"+ "static/"+uniqFileName);
+
+    uploadParams.Body = stream 
+    uploadParams.Key = "xlsx/" + uniqFileName
+    const data = await s3.upload(uploadParams).promise()
+
+    await fs.promises.unlink(__dirname + "/../"+ "static/"+uniqFileName);
+
+    return data.Location;
+
+}
+
 const fileDelete = async (object) => {
 
     const res = await s3.deleteObject(object).promise()
@@ -42,4 +66,4 @@ const fileDelete = async (object) => {
 
 }
 
-module.exports = { fileUploadCustom, fileDelete };
+module.exports = { fileUploadCustom, fileDelete, xlsxUploadCustom };
