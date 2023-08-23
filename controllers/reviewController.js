@@ -19,7 +19,7 @@ class ReviewController {
                     `dev_server: ${e.code} + ${e.message}`
                 )
             );
-                }
+        }
     }
 
 }
