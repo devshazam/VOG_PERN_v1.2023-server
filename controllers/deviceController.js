@@ -12,6 +12,7 @@ class DeviceController {
     // Создание одного заказа для карзины клиента
     async homePage(req, res, next) {
         const { name, value, description, descriptionText, userId, goodId } = req.body;
+
         try{
             const fileLocation = await fileUploadCustom(req.files.img, "devices/"); // вставить 
             let device;
