@@ -8,52 +8,52 @@ const fs = require('fs')
 const xlsx = require('node-xlsx');
 
 class GoodsController {
+
+    
     async createGoods(req, res, next) {
         const { name, description, group, price, userId, artikul } = req.body;
 
-        let fileLocation;
         try {
-            fileLocation = await fileUploadCustom(req.files.image, "goods/"); // вставить
+            const fileLocation = await fileUploadCustom(req.files.image, "goods/"); // вставить
+            console.log(fileLocation);
+            const goods = await Goods.create({
+                name,
+                description,
+                group,
+                price,
+                image: fileLocation,
+                userId, 
+                artikul
+            });
+    
+            return res.json(goods);
         } catch (e) {
             return next(
-                ApiError.internal(`dev_server: ${e.code} + ${e.message}`)
+                ApiError.internal(`server_error(13): ${e.code} + ${e.message}`)
             );
         }
 
-        console.log(fileLocation);
 
-        const device = await Goods.create({
-            name,
-            description,
-            group,
-            price,
-            image: fileLocation,
-            userId, 
-            artikul
-        });
-
-        return res.json(device);
     }
 
 
 
     async fetchGoodsList(req, res, next) {
         let { itemSort, orderSort, limit, page, categoryIt } = req.query;
-        page = page || 1;
-        limit = limit || 24;
+        page = +page || 1;
+        limit = +limit || 24;
         itemSort = itemSort || "createdAt";
         orderSort = orderSort || "ASC";
         let offset = page * limit - limit;
-        let devices;
 
         try {
-            devices = await Goods.findAndCountAll({
+            const goods = await Goods.findAndCountAll({
                 where: { group: categoryIt },
                 order: [[itemSort, orderSort]],
                 limit,
                 offset,
             });
-            return res.json(devices);
+            return res.json(goods);
         } catch (e) {
             return next(
                 ApiError.internal(
@@ -87,52 +87,41 @@ class GoodsController {
             const goods = await Goods.destroy({ where: { id } });
             if(goods === 1){
                 const mid2 = await fileDelete(delObj);
-                console.log(mid2)
+                // console.log(mid2)
             }
-            return res.json(goods);
+            return res.json({goods});
         } catch (e) {
             return next(
                 ApiError.internal(
-                    `dev_server: ${e.code} + ${e.message}`
+                    `server_error(04): ${e.code} + ${e.message}`
                 )
             );
         }
     }
     async updateGoods(req, res, next) {
-        const { name, description, group, price, userId, id } = req.body;
+        const { name, description, group, price, userId, id, artikul } = req.body;
 
-        let fileLocation;
         try {
             const getOneGoods = await Goods.findOne({ where: { id } });
-            
-            fileLocation = await fileUploadCustom(req.files.image, "goods/"); // вставить
-        } catch (e) {
-            return next(
-                ApiError.internal(`dev_server: ${e.code} + ${e.message}`)
-            );
-        }
-        try{
-                const goods = await Goods.update({
+            const fileLocation = await fileUploadCustom(req.files.image, "goods/"); // вставить
+            const goods = await Goods.update({
                 name,
                 description,
                 group,
                 price,
                 image: fileLocation,
-                userId
+                userId, 
+                artikul
             }, {where: {id}});
-            console.log(1, typeof goods)
 
             if(goods[0] === 1){
-
                 let mid1 =  getOneGoods.image.split("//")[1].split("/");
-                console.log(mid1)
                 let delObj = {Bucket: mid1[1]+'/'+mid1[2], Key: mid1[3]};
                 const mid2 = await fileDelete(delObj);
-                console.log(mid2)
             }
 
             return res.json({success: true});
-        } catch (error) {
+        }  catch (error) {
             return next(
                 ApiError.internal(
                     `dev_server: ${error.code} + ${error.message}`
@@ -167,7 +156,7 @@ class GoodsController {
         } catch (e) {
             return next(
                 ApiError.badRequest(
-                    `Ошибка БД1 (deviceController.allOrdersAdmin): ${e.code} + ${e.message}`
+                    `server_error(01): ${e.code} + ${e.message}`
                 )
             );
         }
@@ -195,7 +184,7 @@ console.log(`${__dirname}/static/${fileName}`)
         } catch (e) {
             return next(
                 ApiError.badRequest(
-                    `Ошибка БД1 (deviceController.allOrdersAdmin): ${e.code} + ${e.message}`
+                    `server_error(06): ${e.code} + ${e.message}`
                 )
             );
         }

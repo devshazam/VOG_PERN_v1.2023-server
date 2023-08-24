@@ -10,20 +10,20 @@ const { fileUploadCustom, fileDelete } = require("../S3/s3Upload");
 
 class DeviceController {
     // Создание одного заказа для карзины клиента
-    async homePage(req, res, next) {
+    async createDevice(req, res, next) {
         const { name, value, description, descriptionText, userId, goodId } = req.body;
 
         try{
             const fileLocation = await fileUploadCustom(req.files.img, "devices/"); // вставить 
             let device;
-            if(+goodId === 0){
+            if(goodId === '0'){
                 device = await Device.create({
                     name,
                     feature: description,
                     img: fileLocation,
                     userId,
                     descriptionText,
-                    price: +value
+                    price: value
                 });
             }else{
                 device = await Device.create({
@@ -36,12 +36,11 @@ class DeviceController {
                     price: +value
                 });
             }
-            const basketDevices = await Device.count({where: { status_pay: false, userId }});
-            await User.update({ basket:  +basketDevices}, { where: { id: userId } });
+
             return res.json(device);
         }catch(e){
             return next(
-                ApiError.internal(`dev_server: ${e.code} + ${e.message}`));}   
+                ApiError.internal(`server(02): ${e.code} + ${e.message}`));}   
     }
 
 
@@ -289,14 +288,13 @@ class DeviceController {
 
         async getUserGoods(req, res, next) {
             let { page, userId } = req.body;
-            console.log(page, userId)
             let limit = 10;
             let orderSort = "ASC";
             let itemSort = "createdAt";
-            let offset = page * limit - limit;
+            let offset = +page * limit - limit;
                     try{
                         const devices = await Device.findAndCountAll({
-                        where: { userId, status_pay: true },
+                        where: { userId: +userId, status_pay: true },
                         order: [[itemSort, orderSort]],
                         limit,
                         offset});

@@ -5,7 +5,7 @@ const checkRoleMiddleware = require('../middleware/checkRoleMiddleware')
 const authMiddleware = require('../middleware/authMiddleware');
 
 
-router.post('/', deviceController.homePage) 
+router.post('/', deviceController.createDevice) 
 router.post('/getpay', deviceController.getPay) 
 router.post('/basket', deviceController.getBasketItems) 
 router.post('/pay-basket-list', deviceController.payBasketList) 

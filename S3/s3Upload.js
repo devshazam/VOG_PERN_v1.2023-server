@@ -23,13 +23,13 @@ const fileUploadCustom = async (img, pathName = '') => {
     const fileName = uuid.v4() + '_' + imgName ;
     await img.mv(path.resolve(__dirname, "..", "static", fileName));
  
-    const stream = fs.createReadStream('static/' + fileName);
+    const stream = fs.createReadStream(__dirname + "/../"+ "static/" + fileName);
 
     uploadParams.Body = stream 
     uploadParams.Key = pathName + fileName
     const data = await s3.upload(uploadParams).promise()
 
-    await fs.promises.unlink("static/" + fileName);
+    await fs.promises.unlink(__dirname + "/../"+ "static/" + fileName);
 
     return data.Location;
 

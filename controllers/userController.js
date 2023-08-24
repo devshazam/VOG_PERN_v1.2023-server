@@ -77,14 +77,14 @@ class UserController {
                 }catch(e){
                     return next(
                         ApiError.badRequest(
-                            `Ошибка БД4 на сервере (deviceController.homePage): ${e.code} + ${e.message}`
+                            `from_server: ${e.code} + ${e.message}`
                         )
                     );
                 }
         }catch(e){
             return next(
                 ApiError.badRequest(
-                    `Ошибка БД4 на сервере (deviceController.homePage): ${e.code} + ${e.message}`
+                    `form_server: ${e.code} + ${e.message}`
                 )
             );
         }
