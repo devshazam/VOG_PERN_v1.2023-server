@@ -203,10 +203,10 @@ class DeviceController {
                        type: "redirect",
                        return_url: "https://kopi34.ru/payinfo/",
                    },
-                   description: device.id,
-                   metadata: {
-                       order_id: device.id,
-                   },
+                   description: "Оплата на сайте kopi34.ru"
+                //    metadata: {
+                //        order_id: device.id,
+                //    },
                };
        
                fetch("https://api.yookassa.ru/v3/payments", {
@@ -244,8 +244,6 @@ class DeviceController {
 
         const { payinfo, orderid } = req.body;
 
-        await User.update({ status_pay: true }, { where: { id: orderid } });
-
         console.log(payinfo);
         fetch("https://api.yookassa.ru/v3/payments/" + payinfo, {
             method: "GET",
@@ -255,15 +253,25 @@ class DeviceController {
                 return res.json();
             })
             .then(function (body) {
-                return res.json(body);
-            })
-            .catch((e) => {
+                if(body.status == 'success'){
+                    const order = JSON.parse(orderid)
+                    order.forEach(i =>
+                        Device.update({ status_pay: true }, { where: { id: order[i] } })
+                    )
+                    return res.json({status: body.status});
+                }
+            
+                return res.json({status: body.status});
+            }).catch((e) => {
                 return next(
                     ApiError.internal(
                         `dev_server: ${e.code} + ${e.message}`
                     )
                 );
             });
+
+
+            
     }
 
     
