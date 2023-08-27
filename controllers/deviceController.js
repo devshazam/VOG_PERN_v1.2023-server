@@ -40,7 +40,7 @@ class DeviceController {
             return res.json(device);
         }catch(e){
             return next(
-                ApiError.internal(`server(02): ${e.code} + ${e.message}`));}   
+                ApiError.internal(`603: ${e.code} + ${e.message}`));}   
     }
 
 
@@ -67,7 +67,7 @@ class DeviceController {
                 }catch(e){
                       return next(
                         ApiError.internal(
-                            `dev_server: ${e.code} + ${e.message}`
+                            `604: ${e.code} + ${e.message}`
                         )
                     );
                 }
@@ -82,7 +82,7 @@ class DeviceController {
                   }catch(e){
                     return next(
                       ApiError.internal(
-                          `dev_server: ${e.code} + ${e.message}`
+                          `604: ${e.code} + ${e.message}`
                       )
                   );
                   }
@@ -96,7 +96,7 @@ class DeviceController {
               }catch(e){
                 return next(
                   ApiError.internal(
-                    `dev_server: ${e.code} + ${e.message}`
+                    `604: ${e.code} + ${e.message}`
                   )
               );
               }
@@ -121,7 +121,7 @@ class DeviceController {
       }catch(e){
         return next(
           ApiError.internal(
-            `dev_server: ${e.code} + ${e.message}`
+            `602: ${e.code} + ${e.message}`
           )
         );
       }
@@ -147,7 +147,7 @@ class DeviceController {
           }catch(e){
             return next(
               ApiError.internal(
-                `dev_server: ${e.code} + ${e.message}`
+                `601: ${e.code} + ${e.message}`
               )
             );
           }
@@ -167,7 +167,7 @@ class DeviceController {
         }catch(e){
             return next(
                 ApiError.internal(
-                    `dev_server: ${e.code} + ${e.message}`
+                    `605: ${e.code} + ${e.message}`
                 )
             );
         }
@@ -223,7 +223,7 @@ class DeviceController {
                    .catch((e) => {
                        return next(
                            ApiError.internal(
-                               `dev_server: ${e.code} + ${e.message}`
+                               `606: ${e.code} + ${e.message}`
                            )
                        );
                    });
@@ -265,7 +265,7 @@ class DeviceController {
             }).catch((e) => {
                 return next(
                     ApiError.internal(
-                        `dev_server: ${e.code} + ${e.message}`
+                        `607: ${e.code} + ${e.message}`
                     )
                 );
             });
@@ -286,7 +286,7 @@ class DeviceController {
             }catch(e){
                 return next(
                     ApiError.internal(
-                        `dev_server: ${e.code} + ${e.message}`
+                        `608: ${e.code} + ${e.message}`
                     )
                 );
             }
@@ -310,7 +310,7 @@ class DeviceController {
                     }catch(e){
                           return next(
                             ApiError.internal(
-                                `dev_server: ${e.code} + ${e.message}`
+                                `609: ${e.code} + ${e.message}`
                             )
                         );
                     }

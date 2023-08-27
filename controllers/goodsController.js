@@ -29,7 +29,7 @@ class GoodsController {
             return res.json(goods);
         } catch (e) {
             return next(
-                ApiError.internal(`server_error(13): ${e.code} + ${e.message}`)
+                ApiError.internal(`610: ${e.code} + ${e.message}`)
             );
         }
 
@@ -57,7 +57,7 @@ class GoodsController {
         } catch (e) {
             return next(
                 ApiError.internal(
-                    `dev_server: ${e.code} + ${e.message}`
+                    `611: ${e.code} + ${e.message}`
                 )
             );
         }
@@ -72,7 +72,7 @@ class GoodsController {
         } catch (e) {
             return next(
                 ApiError.internal(
-                    `dev_server: ${e.code} + ${e.message}`
+                    `612: ${e.code} + ${e.message}`
                 )
             );
         }
@@ -93,7 +93,7 @@ class GoodsController {
         } catch (e) {
             return next(
                 ApiError.internal(
-                    `server_error(04): ${e.code} + ${e.message}`
+                    `613: ${e.code} + ${e.message}`
                 )
             );
         }
@@ -124,7 +124,7 @@ class GoodsController {
         }  catch (error) {
             return next(
                 ApiError.internal(
-                    `dev_server: ${error.code} + ${error.message}`
+                    `614: ${error.code} + ${error.message}`
                 )
             );
     }
@@ -156,7 +156,7 @@ class GoodsController {
         } catch (e) {
             return next(
                 ApiError.badRequest(
-                    `server_error(01): ${e.code} + ${e.message}`
+                    `615: ${e.code} + ${e.message}`
                 )
             );
         }
@@ -184,7 +184,7 @@ console.log(`${__dirname}/static/${fileName}`)
         } catch (e) {
             return next(
                 ApiError.badRequest(
-                    `server_error(06): ${e.code} + ${e.message}`
+                    `616: ${e.code} + ${e.message}`
                 )
             );
         }
