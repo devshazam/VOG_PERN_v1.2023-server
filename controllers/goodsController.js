@@ -3,6 +3,7 @@ const ApiError = require("../error/ApiError");
 const { fileUploadCustom, fileDelete, xlsxUploadCustom } = require("../S3/s3Upload");
 const uuid = require("uuid");
 const path = require("path");
+const { appendFile } = require("../error-log/LogHandling");
 
 const fs = require('fs')
 const xlsx = require('node-xlsx');
@@ -134,9 +135,11 @@ class GoodsController {
 
 
 
-
+        // appendFiles('log.txt', '\nSecond line appended.')
+        // return
 
     async buildXls(req, res, next) {
+    
         try {
             const data = await Goods.findAll()
             let xlsArray = []; 
@@ -167,6 +170,7 @@ class GoodsController {
 
 
     async parceXls(req, res, next) {
+
         try {const img = req.files.img
             console.log(req.files.img.name)
             
