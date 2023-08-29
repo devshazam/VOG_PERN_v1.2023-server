@@ -3,13 +3,7 @@ const router = new Router()
 const reviewController = require('../controllers/reviewController')
 
 
-
-
-// Open
-router.post('/', reviewController.createReview) 
-// router.get('/admin/devices-view/', deviceController.allOrdersAdmin)
-
-
+router.post('/', reviewController.createReview) // 1
 
 
 module.exports = router

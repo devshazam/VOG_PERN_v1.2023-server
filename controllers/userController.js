@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const {User} = require('../models/models')
 const uuid = require('uuid');
+const { appendFiles } = require("../error-log/LogHandling");
 
 const generateJwt = (id, email, role, phone, basket) => {
     return jwt.sign(
@@ -12,14 +13,10 @@ const generateJwt = (id, email, role, phone, basket) => {
     )
 }
 
-
 class UserController {
 
-    /* Регистрация пользователя
-    *   1. Подтверждение email
-    *   2. 
-    */
 
+    // POST(_1_): `api/user/` + `/registration`
     async registration(req, res, next) {
             const {name, email, password, phone} = req.body
             const role = 'USER';
@@ -41,7 +38,7 @@ class UserController {
     }
 
 
-    // Вход для обыччных пользователей
+    // POST(_2_): `api/user/` + `/login`
     async login(req, res, next) {
         const {email, password} = req.body
         const user = await User.findOne({where: {email}})
@@ -59,6 +56,7 @@ class UserController {
     }
 
 
+    // GET(_3_): `api/user/` + `/auth`
     // Проверка авторизации ползователя при обращении к сайту в файле APP.js
     async check(req, res, next) {
         const token = generateJwt(req.user.id, req.user.email, req.user.role, req.user.phone, req.user.basket)
@@ -66,6 +64,7 @@ class UserController {
     }
 
 
+    // POST(_4_): `api/user/` + `/change`
     async change(req, res, next) {
         const {email, phone} = req.body
 
@@ -75,16 +74,18 @@ class UserController {
                 const token = generateJwt(user.id, user.email, user.role, user.phone, user.basket)
                 return res.json({token})
                 }catch(e){
+                    appendFiles(`\n618: ${e.message}`)
                     return next(
                         ApiError.badRequest(
-                            `618: ${e.code} + ${e.message}`
+                            `618: ${e.message}`
                         )
                     );
                 }
         }catch(e){
+            appendFiles(`\n619: ${e.message}`)
             return next(
                 ApiError.badRequest(
-                    `619: ${e.code} + ${e.message}`
+                    `619: ${e.message}`
                 )
             );
         }

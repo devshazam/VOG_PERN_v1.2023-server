@@ -2,14 +2,15 @@ const uuid = require("uuid");
 const path = require("path");
 const fs = require('fs')
 const fetch = require("node-fetch");
-
+const { appendFiles } = require("../error-log/LogHandling");
 const { Device, User } = require("../models/models");
 const ApiError = require("../error/ApiError");
 const { fileUploadCustom, fileDelete } = require("../S3/s3Upload");
 
 
 class DeviceController {
-    // Создание одного заказа для карзины клиента
+
+    // POST(_1_): `api/device/` + `/`
     async createDevice(req, res, next) {
         const { name, value, description, descriptionText, userId, goodId } = req.body;
 
@@ -39,14 +40,15 @@ class DeviceController {
 
             return res.json(device);
         }catch(e){
+            appendFiles(`\n603: ${e.message}`)
             return next(
-                ApiError.internal(`603: ${e.code} + ${e.message}`));}   
+                ApiError.internal(`603: ${e.message}`));}   
     }
 
 
 
 
-
+    // GET(_2_): `api/device/` + `/admin/devices-view/`
     async allOrdersAdmin(req, res, next) {
         let { itemSort, orderSort, limit, page, id, filter, userId } = req.query;
         page = page || 1;
@@ -65,9 +67,10 @@ class DeviceController {
                     offset});
                   return res.json(devices);
                 }catch(e){
-                      return next(
+                    appendFiles(`\n604: ${e.message}`)
+                    return next(
                         ApiError.internal(
-                            `604: ${e.code} + ${e.message}`
+                            `604: ${e.message}`
                         )
                     );
                 }
@@ -80,11 +83,12 @@ class DeviceController {
                     offset});
                     return res.json(devices);
                   }catch(e){
+                    appendFiles(`\n604: ${e.message}`)
                     return next(
                       ApiError.internal(
-                          `604: ${e.code} + ${e.message}`
+                          `604: ${e.message}`
                       )
-                  );
+                    );
                   }
             } else {
               try{devices = await Device.findAndCountAll({
@@ -94,11 +98,12 @@ class DeviceController {
                   offset});
                   return res.json(devices);
               }catch(e){
+                appendFiles(`\n604: ${e.message}`)
                 return next(
                   ApiError.internal(
-                    `604: ${e.code} + ${e.message}`
+                    `604: ${e.message}`
                   )
-              );
+                );
               }
             }
         
@@ -106,6 +111,7 @@ class DeviceController {
 
 
     
+    // POST(_3_): `api/device/` + `/delete-item/`
     // изменить статус готовности заказа
     async deleteOrdersAdmin(req, res, next) {
         // Done
@@ -119,44 +125,48 @@ class DeviceController {
 
         return res.json(device);
       }catch(e){
-        return next(
-          ApiError.internal(
-            `602: ${e.code} + ${e.message}`
-          )
-        );
+            appendFiles(`\n602: ${e.message}`)
+            return next(
+                ApiError.internal(
+                    `602: ${e.message}`
+                )
+            );
       }
         
     }
 
 
         // удвалить один заказ
-        async deleteOneItem(req, res, next) {
+    // POST(_4_): `api/device/` + `/delete-basket-item/`
+    async deleteOneItem(req, res, next) {
 
-            const { id } = req.body;
-            try{
-                const getOneGoods = await Device.findOne({ where: { id } });
-                let mid1 =  getOneGoods.img.split("//")[1].split("/");
-                console.log(mid1)
-                let delObj = {Bucket: mid1[1]+'/'+mid1[2], Key: mid1[3]};
-                const goods = await Device.destroy({ where: { id } });
-                if(goods === 1){
-                    const mid2 = await fileDelete(delObj);
-                    console.log(mid2)
-                }
-                return res.json(goods);
-          }catch(e){
+        const { id } = req.body;
+        try{
+            const getOneGoods = await Device.findOne({ where: { id } });
+            let mid1 =  getOneGoods.img.split("//")[1].split("/");
+            console.log(mid1)
+            let delObj = {Bucket: mid1[1]+'/'+mid1[2], Key: mid1[3]};
+            const goods = await Device.destroy({ where: { id } });
+            if(goods === 1){
+                const mid2 = await fileDelete(delObj);
+                console.log(mid2)
+            }
+            return res.json(goods);
+        }catch(e){
+            appendFiles(`\n601: ${e.message}`)
             return next(
-              ApiError.internal(
-                `601: ${e.code} + ${e.message}`
-              )
+                ApiError.internal(
+                `601: ${e.message}`
+                )
             );
-          }
-            
         }
+        
+    }
 
 
 
     // получить все заказы корзины клиента
+    // POST(_5_): `api/device/` + `/basket`
     async getBasketItems(req, res, next) {
         const { id } = req.body;
         try{
@@ -165,9 +175,10 @@ class DeviceController {
             });
             return res.json(devices);
         }catch(e){
+            appendFiles(`\n605: ${e.message}`)
             return next(
                 ApiError.internal(
-                    `605: ${e.code} + ${e.message}`
+                    `605: ${e.message}`
                 )
             );
         }
@@ -176,6 +187,7 @@ class DeviceController {
 
 
     // оплата товаров в корзине 
+    // POST(_6_): `api/device/` + `/pay-basket-list`
     async payBasketList(req, res, next) {
                 const { value } = req.body;        
                // Send to YOOMONEY
@@ -221,15 +233,17 @@ class DeviceController {
                        return res.json(body);
                    })
                    .catch((e) => {
-                       return next(
-                           ApiError.internal(
-                               `606: ${e.code} + ${e.message}`
-                           )
-                       );
+                        appendFiles(`\n606: ${e.message}`)
+                        return next(
+                            ApiError.internal(
+                                `606: ${e.message}`
+                            )
+                        );
                    });
     }
 
 
+    // POST(_7_): `api/device/` + `/getpay`
     // оповещение о статусе оплаты юмани TODO - обнуление карзины юзера + 
     async getPay(req, res, next) {
         // Done
@@ -263,9 +277,10 @@ class DeviceController {
             
                 return res.json({status: body.status});
             }).catch((e) => {
+                appendFiles(`\n607: ${e.message}`)
                 return next(
                     ApiError.internal(
-                        `607: ${e.code} + ${e.message}`
+                        `607: ${e.message}`
                     )
                 );
             });
@@ -275,46 +290,49 @@ class DeviceController {
     }
 
     
-        // получить все заказы корзины клиента
-        async reciveBasketCount(req, res, next) {
-            const { id } = req.body;
-            try{
-                const numberBasket = await Device.count({
-                    where: { status_pay: false, userId: +id }
-                });
-                return res.json(numberBasket);
-            }catch(e){
-                return next(
-                    ApiError.internal(
-                        `608: ${e.code} + ${e.message}`
-                    )
-                );
-            }
-            
+    // POST(_8_): `api/device/` + `/recive-basket-count`
+    // получить все заказы корзины клиента
+    async reciveBasketCount(req, res, next) {
+        const { id } = req.body;
+        try{
+            const numberBasket = await Device.count({
+                where: { status_pay: false, userId: +id }
+            });
+            return res.json(numberBasket);
+        }catch(e){
+            appendFiles(`\n608: ${e.message}`)
+            return next(
+                ApiError.internal(
+                    `608: ${e.message}`
+                )
+            );
         }
+        
+    }
 
-
-        async getUserGoods(req, res, next) {
-            let { page, userId } = req.body;
-            let limit = 10;
-            let orderSort = "ASC";
-            let itemSort = "createdAt";
-            let offset = +page * limit - limit;
-                    try{
-                        const devices = await Device.findAndCountAll({
-                        where: { userId: +userId, status_pay: true },
-                        order: [[itemSort, orderSort]],
-                        limit,
-                        offset});
-                      return res.json(devices);
-                    }catch(e){
-                          return next(
-                            ApiError.internal(
-                                `609: ${e.code} + ${e.message}`
-                            )
-                        );
-                    }
+    // POST(_9_): `api/device/` + `/user-pay-goods/`
+    async getUserGoods(req, res, next) {
+        let { page, userId } = req.body;
+        let limit = 10;
+        let orderSort = "ASC";
+        let itemSort = "createdAt";
+        let offset = +page * limit - limit;
+                try{
+                    const devices = await Device.findAndCountAll({
+                    where: { userId: +userId, status_pay: true },
+                    order: [[itemSort, orderSort]],
+                    limit,
+                    offset});
+                    return res.json(devices);
+                }catch(e){
+                    appendFiles(`\n609: ${e.message}`)
+                    return next(
+                        ApiError.internal(
+                            `609: ${e.message}`
+                        )
+                    );
                 }
+            }
 
 }
 

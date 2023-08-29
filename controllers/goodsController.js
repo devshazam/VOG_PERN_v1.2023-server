@@ -3,14 +3,14 @@ const ApiError = require("../error/ApiError");
 const { fileUploadCustom, fileDelete, xlsxUploadCustom } = require("../S3/s3Upload");
 const uuid = require("uuid");
 const path = require("path");
-const { appendFile } = require("../error-log/LogHandling");
+const { appendFiles } = require("../error-log/LogHandling");
 
 const fs = require('fs')
 const xlsx = require('node-xlsx');
 
 class GoodsController {
 
-    
+    // POST(_1_): `api/goods/` + `/`
     async createGoods(req, res, next) {
         const { name, description, group, price, userId, artikul } = req.body;
 
@@ -29,8 +29,9 @@ class GoodsController {
     
             return res.json(goods);
         } catch (e) {
+            appendFiles(`\n610: ${e.message}`)
             return next(
-                ApiError.internal(`610: ${e.code} + ${e.message}`)
+                ApiError.internal(`610: ${e.message}`)
             );
         }
 
@@ -38,7 +39,7 @@ class GoodsController {
     }
 
 
-
+    // GET(_2_): `api/goods/` + `/fetch-list`
     async fetchGoodsList(req, res, next) {
         let { itemSort, orderSort, limit, page, categoryIt } = req.query;
         page = +page || 1;
@@ -56,29 +57,32 @@ class GoodsController {
             });
             return res.json(goods);
         } catch (e) {
+            appendFiles(`\n611: ${e.message}`)
             return next(
                 ApiError.internal(
-                    `611: ${e.code} + ${e.message}`
+                    `611: ${e.message}`
                 )
             );
         }
     }   
 
-
+    // GET(_3_): `api/goods/` + `/fetch-one`
     async fetchOneGoods(req, res, next) {
         let { id } = req.query;
         try {
             const goods = await Goods.findOne({ where: { id } });
             return res.json(goods);
         } catch (e) {
+            appendFiles(`\n612: ${e.message}`)
             return next(
                 ApiError.internal(
-                    `612: ${e.code} + ${e.message}`
+                    `612: ${e.message}`
                 )
             );
         }
     }
 
+    // GET(_4_): `api/goods/` + `/delete-one`
     async deleteOneGoods(req, res, next) {
         let { id } = req.query;
         try {
@@ -92,13 +96,16 @@ class GoodsController {
             }
             return res.json({goods});
         } catch (e) {
+            appendFiles(`\n613: ${e.message}`)
             return next(
                 ApiError.internal(
-                    `613: ${e.code} + ${e.message}`
+                    `613: ${e.message}`
                 )
             );
         }
     }
+
+    // POST(_5_): `api/goods/` + `/update-one`
     async updateGoods(req, res, next) {
         const { name, description, group, price, userId, id, artikul } = req.body;
 
@@ -123,23 +130,19 @@ class GoodsController {
 
             return res.json({success: true});
         }  catch (error) {
+            appendFiles(`\n614: ${e.message}`)
             return next(
                 ApiError.internal(
-                    `614: ${error.code} + ${error.message}`
+                    `614: ${error.message}`
                 )
             );
+        }
     }
 
-        
-    }
 
 
-
-        // appendFiles('log.txt', '\nSecond line appended.')
-        // return
-
+    // GET(_6_): `api/goods/` + `/fetch-xsl-file`
     async buildXls(req, res, next) {
-    
         try {
             const data = await Goods.findAll()
             let xlsArray = []; 
@@ -151,15 +154,14 @@ class GoodsController {
                     xlsArray[i].push(data[i].price)
                     xlsArray[i].push(data[i].id)
             }
-
             var buffer = xlsx.build([{name: 'GoodsList', data: xlsArray}]);
             const fileLocation = await xlsxUploadCustom(buffer);
-
             return res.json({fileLocation});
         } catch (e) {
+            appendFiles(`\n615: ${e.message}`)
             return next(
                 ApiError.badRequest(
-                    `615: ${e.code} + ${e.message}`
+                    `615: ${e.message}`
                 )
             );
         }
@@ -168,7 +170,8 @@ class GoodsController {
 
 
 
-
+// STOPED 
+    // POST(_7_): `api/goods/` + `/parce-xls`
     async parceXls(req, res, next) {
 
         try {const img = req.files.img
@@ -186,9 +189,10 @@ console.log(`${__dirname}/static/${fileName}`)
 
             return res.json({workSheetsFromFile});
         } catch (e) {
+            appendFiles(`\n616: ${e.message}`)
             return next(
                 ApiError.badRequest(
-                    `616: ${e.code} + ${e.message}`
+                    `616: ${e.message}`
                 )
             );
         }

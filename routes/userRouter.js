@@ -4,13 +4,12 @@ const userController = require('../controllers/userController')
 const authMiddleware = require('../middleware/authMiddleware')
 
 
+router.get('/auth', authMiddleware, userController.check) // № 3
 
-
-router.post('/registration', userController.registration)
-router.post('/login', userController.login)
+router.post('/registration', userController.registration) // № 1
+router.post('/login', userController.login) // № 2
 // router.post('/confirm-mail', userController.confirmMail)
-router.get('/auth', authMiddleware, userController.check)
-router.post('/change', authMiddleware, userController.change)
+router.post('/change', authMiddleware, userController.change) // № 1
 
 
 module.exports = router
