@@ -49,6 +49,13 @@ const Goods = sequelize.define('goods', {
 
 })
 
+const Items = sequelize.define('items', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}, // 
+}) 
+
+
+Items.hasMany(Device)
+Device.belongsTo(Items)
 
 User.hasMany(Device)
 Device.belongsTo(User)
@@ -67,6 +74,7 @@ module.exports = {
     Device, 
     Review, 
     Goods, 
+    Items,
 }
 
 

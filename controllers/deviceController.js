@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require('fs')
 const fetch = require("node-fetch");
 const { appendFiles } = require("../error-log/LogHandling");
-const { Device, User } = require("../models/models");
+const { Device, User, Items } = require("../models/models");
 const ApiError = require("../error/ApiError");
 const { fileUploadCustom, fileDelete } = require("../S3/s3Upload");
 
@@ -269,8 +269,9 @@ class DeviceController {
             .then(function (body) {
                 if(body.status == 'success'){
                     const order = JSON.parse(orderid)
+                    const item = await Items.create();
                     order.forEach(i =>
-                        Device.update({ status_pay: true }, { where: { id: order[i] } })
+                        Device.update({ status_pay: true, itemId: item.id }, { where: { id: order[i] } })
                     )
                     return res.json({status: body.status});
                 }
