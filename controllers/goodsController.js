@@ -12,7 +12,7 @@ class GoodsController {
 
     // POST(_1_): `api/goods/` + `/`
     async createGoods(req, res, next) {
-        const { name, description, group, price, userId, artikul } = req.body;
+        const { name, description, group, price, userId, artikul, priceImg } = req.body;
 
         try {
             const fileLocation = await fileUploadCustom(req.files.image, "goods/"); // вставить
@@ -24,7 +24,8 @@ class GoodsController {
                 price,
                 image: fileLocation,
                 userId, 
-                artikul
+                artikul,
+                price_img: priceImg
             });
     
             return res.json(goods);

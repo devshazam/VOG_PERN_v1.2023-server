@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require('fs')
 const fetch = require("node-fetch");
 const { appendFiles } = require("../error-log/LogHandling");
-const { Device, User, Items } = require("../models/models");
+const { Device, User, Requisites } = require("../models/models");
 const ApiError = require("../error/ApiError");
 const { fileUploadCustom, fileDelete } = require("../S3/s3Upload");
 
@@ -13,31 +13,41 @@ class DeviceController {
     // POST(_1_): `api/device/` + `/`
     async createDevice(req, res, next) {
         const { name, value, description, descriptionText, userId, goodId } = req.body;
-
+console.log(req.files)
         try{
-            const fileLocation = await fileUploadCustom(req.files.img, "devices/"); // вставить 
             let device;
-            if(goodId === '0'){
+            if(!req.files){
                 device = await Device.create({
                     name,
                     feature: description,
-                    img: fileLocation,
-                    userId,
-                    descriptionText,
-                    price: value
-                });
-            }else{
-                device = await Device.create({
-                    name,
-                    feature: description,
-                    img: fileLocation,
                     userId,
                     descriptionText,
                     goodId, 
                     price: +value
                 });
+            }else{
+                const fileLocation = await fileUploadCustom(req.files.img, "devices/"); // вставить 
+                if(goodId === '0'){
+                    device = await Device.create({
+                        name,
+                        feature: description,
+                        img: fileLocation,
+                        userId,
+                        descriptionText,
+                        price: value
+                    });
+                }else{
+                    device = await Device.create({
+                        name,
+                        feature: description,
+                        img: fileLocation,
+                        userId,
+                        descriptionText,
+                        goodId, 
+                        price: +value
+                    });
+                }
             }
-
             return res.json(device);
         }catch(e){
             appendFiles(`\n603: ${e.message}`)
@@ -143,11 +153,11 @@ class DeviceController {
         const { id } = req.body;
         try{
             const getOneGoods = await Device.findOne({ where: { id } });
-            let mid1 =  getOneGoods.img.split("//")[1].split("/");
-            console.log(mid1)
-            let delObj = {Bucket: mid1[1]+'/'+mid1[2], Key: mid1[3]};
+console.log(getOneGoods.img)
             const goods = await Device.destroy({ where: { id } });
-            if(goods === 1){
+            if(goods == 1 && getOneGoods.img){
+                let mid1 =  getOneGoods.img.split("//")[1].split("/");
+                let delObj = {Bucket: mid1[1]+'/'+mid1[2], Key: mid1[3]};
                 const mid2 = await fileDelete(delObj);
                 console.log(mid2)
             }
@@ -269,9 +279,8 @@ class DeviceController {
             .then(function (body) {
                 if(body.status == 'success'){
                     const order = JSON.parse(orderid)
-                    const item = await Items.create();
                     order.forEach(i =>
-                        Device.update({ status_pay: true, itemId: item.id }, { where: { id: order[i] } })
+                        Device.update({ status_pay: true }, { where: { id: order[i] } })
                     )
                     return res.json({status: body.status});
                 }
@@ -334,6 +343,22 @@ class DeviceController {
                     );
                 }
             }
+
+
+    // POST(_10_): `api/device/` + `/fetch-requisites`
+    async fetchRequisites(req, res, next) {
+        const { id } = req.body;
+
+        try{
+
+                const requisites = await Requisites.findOne({where: {userId: id}});
+                console.log(requisites)
+            return res.json(requisites);
+        }catch(e){
+            appendFiles(`\n603: ${e.message}`)
+            return next(
+                ApiError.internal(`603: ${e.message}`));}   
+    }
 
 }
 

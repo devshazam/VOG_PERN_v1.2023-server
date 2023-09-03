@@ -1,3 +1,9 @@
 Log of errors:
 615: hehe; Tue Aug 29 2023 17:05:19 GMT+0300 (Москва, стандартное время)
 615: hehe; Tue Aug 29 2023 17:06:56 GMT+0300 (Москва, стандартное время)
+603: Cannot read properties of null (reading 'img'); Sun Sep 03 2023 14:46:42 GMT+0300 (Москва, стандартное время)
+603: Cannot read properties of null (reading 'img'); Sun Sep 03 2023 15:44:52 GMT+0300 (Москва, стандартное время)
+603: Cannot read properties of null (reading 'img'); Sun Sep 03 2023 15:46:29 GMT+0300 (Москва, стандартное время)
+603: Cannot access 'device' before initialization; Sun Sep 03 2023 16:06:54 GMT+0300 (Москва, стандартное время)
+610: ENOENT: no such file or directory, open 'C:\Users\jackl\OneDrive\Рабочий стол\SERVER-kopi34.ru\static\0599a8fa-c31e-4def-bb20-b92793f17a6d_93Kb.jpg'; Sun Sep 03 2023 16:18:22 GMT+0300 (Москва, стандартное время)
+601: Cannot read properties of null (reading 'split'); Sun Sep 03 2023 16:29:54 GMT+0300 (Москва, стандартное время)

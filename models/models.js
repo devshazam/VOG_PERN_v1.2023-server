@@ -8,7 +8,7 @@ const Device = sequelize.define('device', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}, 
     name: {type: DataTypes.STRING, allowNull: false}, // Название товара
     feature: {type: DataTypes.STRING, allowNull: false}, // Хар-ки заказа (Все параметры в тексте + описание)
-    img: {type: DataTypes.STRING, allowNull: false}, // Ссылка на файл 
+    img: {type: DataTypes.STRING}, // Ссылка на файл 
     price: {type: DataTypes.STRING, allowNull: false}, // Стоимость товара
     // Данные клиента
     descriptionText: {type: DataTypes.TEXT, defaultValue: 'без описания'},
@@ -44,18 +44,31 @@ const Goods = sequelize.define('goods', {
     description: {type: DataTypes.TEXT, allowNull: false}, // Хар-ки заказа (Все параметры в тексте + описание)
     image: {type: DataTypes.STRING, allowNull: false}, // Ссылка на файл 
     price: {type: DataTypes.STRING, allowNull: false}, // Новая цена
+    price_img: {type: DataTypes.STRING, allowNull: false}, // Новая цена
     artikul: {type: DataTypes.STRING}, // артикул товара
     group: {type: DataTypes.STRING, allowNull: false}, // группа товара
 
 })
 
-const Items = sequelize.define('items', {
-    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}, // 
-}) 
+const Requisites = sequelize.define('requisites', {
+    // Данные товара
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}, 
+    director_full_name: {type: DataTypes.STRING, allowNull: false}, // Название товара
+    inn: {type: DataTypes.STRING, allowNull: false}, // Название товара
+    ogrn: {type: DataTypes.STRING, allowNull: false}, // Название товара
+    bik: {type: DataTypes.STRING, allowNull: false}, // Название товара
+    checking_account: {type: DataTypes.STRING, allowNull: false}, // Название товара
+    bank_name: {type: DataTypes.STRING, allowNull: false}, // Название товара
+    bank_address: {type: DataTypes.STRING, allowNull: false}, // Название товара
+    kor_account: {type: DataTypes.STRING, allowNull: false}, // Название товара
+    org_full_name: {type: DataTypes.STRING, allowNull: false}, // Название товара
+    legal_address: {type: DataTypes.STRING, allowNull: false}, // Название товара
+})
 
 
-Items.hasMany(Device)
-Device.belongsTo(Items)
+
+User.hasOne(Requisites)
+Requisites.belongsTo(User)
 
 User.hasMany(Device)
 Device.belongsTo(User)
@@ -74,7 +87,7 @@ module.exports = {
     Device, 
     Review, 
     Goods, 
-    Items,
+    Requisites,
 }
 
 
