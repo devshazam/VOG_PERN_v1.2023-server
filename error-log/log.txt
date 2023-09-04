@@ -7,3 +7,10 @@ Log of errors:
 603: Cannot access 'device' before initialization; Sun Sep 03 2023 16:06:54 GMT+0300 (Москва, стандартное время)
 610: ENOENT: no such file or directory, open 'C:\Users\jackl\OneDrive\Рабочий стол\SERVER-kopi34.ru\static\0599a8fa-c31e-4def-bb20-b92793f17a6d_93Kb.jpg'; Sun Sep 03 2023 16:18:22 GMT+0300 (Москва, стандартное время)
 601: Cannot read properties of null (reading 'split'); Sun Sep 03 2023 16:29:54 GMT+0300 (Москва, стандартное время)
+603: notNull Violation: requisites.director_full_name cannot be null,
+notNull Violation: requisites.checking_account cannot be null,
+notNull Violation: requisites.bank_name cannot be null,
+notNull Violation: requisites.bank_address cannot be null,
+notNull Violation: requisites.kor_account cannot be null,
+notNull Violation: requisites.org_full_name cannot be null,
+notNull Violation: requisites.legal_address cannot be null; Mon Sep 04 2023 11:21:21 GMT+0300 (Москва, стандартное время)

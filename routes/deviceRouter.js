@@ -13,7 +13,8 @@ router.post('/pay-basket-list', deviceController.payBasketList) // № 6
 router.post('/getpay', deviceController.getPay) // № 7
 router.post('/recive-basket-count', deviceController.reciveBasketCount) // № 8
 router.post('/user-pay-goods/', deviceController.getUserGoods) // № 9
-router.post('/fetch-requisites/', deviceController.fetchRequisites) // № 9
+router.post('/fetch-requisites/', deviceController.fetchRequisites) // № 10
+router.post('/create-requisites/', deviceController.createRequisites) // № 11
 
 
 module.exports = router

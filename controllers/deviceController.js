@@ -360,6 +360,24 @@ console.log(getOneGoods.img)
                 ApiError.internal(`603: ${e.message}`));}   
     }
 
+
+    
+    async createRequisites(req, res, next) {
+        const {directorFullName, inn, ogrn, bik, checkingAccount, bankName, bankAddress, korAccount, orgFullName, legalAddress} = req.body;
+
+
+        try{
+
+
+                const requisites = await Requisites.create({director_full_name: directorFullName, inn, ogrn, bik, checking_account: checkingAccount, bank_name: bankName, bank_address: bankAddress, kor_account: korAccount, org_full_name: orgFullName, legal_address: legalAddress});
+
+
+            return res.json(requisites);
+        }catch(e){
+            appendFiles(`\n603: ${e.message}`)
+            return next(
+                ApiError.internal(`603: ${e.message}`));}   
+    }
 }
 
 module.exports = new DeviceController();
