@@ -3,18 +3,23 @@ const path = require("path");
 const fs = require("fs");
 const fetch = require("node-fetch");
 const { appendFiles } = require("../error-log/LogHandling");
-const { Device, Requisites } = require("../models/models");
+const { Device, Requisites, User, Basket, BasketDevice, Orders } = require("../models/models");
 const ApiError = require("../error/ApiError");
 const { fileUploadCustom, fileDelete } = require("../S3/s3Upload");
 
 class DeviceController {
+
+
     // POST(_1_): `api/device/` + `/`
     async createDevice(req, res, next) {
-        let { name, value, description, descriptionText, userId, goodId } =
-            req.body;
+        let { name, value, description, descriptionText, userId, goodId } = req.body;
         goodId = goodId || null;
+
         try {
-                let fileLocation = null
+                const userMid = await User.findOne({where: {id: userId}});
+                const basket = await userMid.getBasket();
+
+                let fileLocation = null;
                 if (req.files) {
                     fileLocation = await fileUploadCustom(
                         req.files.img,
@@ -30,13 +35,15 @@ class DeviceController {
                         goodId,
                         price: +value,
                     });
-
+                await BasketDevice.create({basketId: basket.id, deviceId: device.id})
+                
             return res.json(device);
         } catch (e) {
             appendFiles(`\n603: ${e.message}`);
             return next(ApiError.internal(`603: ${e.message}`));
         }
     }
+
 
     // GET(_2_): `api/device/` + `/admin/devices-view/`
     async allOrdersAdmin(req, res, next) {
@@ -138,20 +145,35 @@ class DeviceController {
     async getBasketItems(req, res, next) {
         const { id } = req.body;
         try {
-            const devices = await Device.findAndCountAll({
-                where: { status_pay: false, userId: id },
+            const userMid = await User.findOne({where: {id}});
+            const basket = await userMid.getBasket();
+            const basketDevices = await BasketDevice.findAll({
+                where: { basketId: basket.id },
             });
-            return res.json(devices);
+
+              let arrayMid = [];
+
+              for (const basketDevice of basketDevices) {
+                arrayMid.push( await Device.findOne({id: basketDevice.deviceId}));
+              }
+
+            return res.json(arrayMid);
         } catch (e) {
             appendFiles(`\n605: ${e.message}`);
             return next(ApiError.internal(`605: ${e.message}`));
         }
     }
 
-    // оплата товаров в корзине + создание заказа +
+    // получение ссылки на оплату из корзины + создание заказа
     // POST(_6_): `api/device/` + `/pay-basket-list`
     async payBasketList(req, res, next) {
-        const { value } = req.body;
+        const { value, id } = req.body;
+
+        const userMid = await User.findOne({where: {id}});
+        const basket = await userMid.getBasket();
+        const order = await Orders.create({value, userId: id});
+        await BasketDevice.update({orderId: order.id}, {where: {basketId: basket.id}})
+
         // Send to YOOMONEY
         const IdempotenceKey = uuid.v4();
         const headersP = {
@@ -248,8 +270,10 @@ class DeviceController {
     async reciveBasketCount(req, res, next) {
         const { id } = req.body;
         try {
-            const numberBasket = await Device.count({
-                where: { status_pay: false, userId: +id },
+            const userMid = await User.findOne({where: {id}});
+            const basket = await userMid.getBasket();
+            const numberBasket = await BasketDevice.count({
+                where: { basketId: basket.id },
             });
             return res.json(numberBasket);
         } catch (e) {
@@ -266,8 +290,8 @@ class DeviceController {
         let itemSort = "createdAt";
         let offset = +page * limit - limit;
         try {
-            const devices = await Device.findAndCountAll({
-                where: { userId: +userId, status_pay: true },
+            const devices = await Orders.findAndCountAll({
+                where: { userId: +userId },
                 order: [[itemSort, orderSort]],
                 limit,
                 offset,

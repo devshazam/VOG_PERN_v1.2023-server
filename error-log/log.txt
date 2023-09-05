@@ -20,3 +20,4 @@ notNull Violation: requisites.legal_address cannot be null; Mon Sep 04 2023 11:2
 601: column "orderId" does not exist; Tue Sep 05 2023 11:25:13 GMT+0300 (Москва, стандартное время)
 601: column "orderId" does not exist; Tue Sep 05 2023 11:25:23 GMT+0300 (Москва, стандартное время)
 601: column "orderId" does not exist; Tue Sep 05 2023 11:25:24 GMT+0300 (Москва, стандартное время)
+603: User.findOne(...).getBasket is not a function; Tue Sep 05 2023 15:53:24 GMT+0300 (Москва, стандартное время)

@@ -1,7 +1,7 @@
 const ApiError = require('../error/ApiError');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const {User} = require('../models/models')
+const {User, Basket} = require('../models/models')
 const uuid = require('uuid');
 const { appendFiles } = require("../error-log/LogHandling");
 
@@ -32,6 +32,9 @@ class UserController {
             const hashPassword = await bcrypt.hash(password, 5)
         // Вставка паролейй в БД
             const user = await User.create({name, phone, email, role, password: hashPassword})
+            
+            const basket = await Basket.create({userId: user.id})
+            console.log(basket)
         // Генерирование токена
             const token = generateJwt(user.id, user.email, user.role, user.phone, user.basket)
             return res.json({token})
