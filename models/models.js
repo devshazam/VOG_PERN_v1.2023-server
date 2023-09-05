@@ -65,7 +65,27 @@ const Requisites = sequelize.define('requisites', {
     legal_address: {type: DataTypes.STRING, allowNull: false}, // Название товара
 })
 
+const Orders = sequelize.define('orders', {
+    // Данные товара
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}, 
+    value: {type: DataTypes.STRING, allowNull: false}, // Название товара
+})
 
+const Basket = sequelize.define('basket', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+})
+
+const BasketDevice = sequelize.define('basket_device', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+})
+
+
+
+Orders.hasMany(Device)
+Device.belongsTo(Orders)
+
+User.hasMany(Orders)
+Orders.belongsTo(User)
 
 User.hasOne(Requisites)
 Requisites.belongsTo(User)
@@ -88,6 +108,7 @@ module.exports = {
     Review, 
     Goods, 
     Requisites,
+    Orders,
 }
 
 

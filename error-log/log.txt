@@ -14,3 +14,9 @@ notNull Violation: requisites.bank_address cannot be null,
 notNull Violation: requisites.kor_account cannot be null,
 notNull Violation: requisites.org_full_name cannot be null,
 notNull Violation: requisites.legal_address cannot be null; Mon Sep 04 2023 11:21:21 GMT+0300 (Москва, стандартное время)
+601: Cannot read properties of null (reading 'img'); Tue Sep 05 2023 10:31:43 GMT+0300 (Москва, стандартное время)
+601: Cannot read properties of null (reading 'img'); Tue Sep 05 2023 10:31:43 GMT+0300 (Москва, стандартное время)
+601: Cannot read properties of null (reading 'img'); Tue Sep 05 2023 10:31:43 GMT+0300 (Москва, стандартное время)
+601: column "orderId" does not exist; Tue Sep 05 2023 11:25:13 GMT+0300 (Москва, стандартное время)
+601: column "orderId" does not exist; Tue Sep 05 2023 11:25:23 GMT+0300 (Москва, стандартное время)
+601: column "orderId" does not exist; Tue Sep 05 2023 11:25:24 GMT+0300 (Москва, стандартное время)
