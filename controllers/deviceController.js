@@ -3,53 +3,34 @@ const path = require("path");
 const fs = require("fs");
 const fetch = require("node-fetch");
 const { appendFiles } = require("../error-log/LogHandling");
-const { Device, User, Requisites } = require("../models/models");
+const { Device, Requisites } = require("../models/models");
 const ApiError = require("../error/ApiError");
 const { fileUploadCustom, fileDelete } = require("../S3/s3Upload");
 
 class DeviceController {
     // POST(_1_): `api/device/` + `/`
     async createDevice(req, res, next) {
-        const { name, value, description, descriptionText, userId, goodId } =
+        let { name, value, description, descriptionText, userId, goodId } =
             req.body;
-        console.log(req.files);
+        goodId = goodId || null;
         try {
-            let device;
-            if (!req.files) {
-                device = await Device.create({
-                    name,
-                    feature: description,
-                    userId,
-                    descriptionText,
-                    goodId,
-                    price: +value,
-                });
-            } else {
-                const fileLocation = await fileUploadCustom(
-                    req.files.img,
-                    "devices/"
-                ); // вставить
-                if (goodId === "0") {
-                    device = await Device.create({
+                let fileLocation = null
+                if (req.files) {
+                    fileLocation = await fileUploadCustom(
+                        req.files.img,
+                        "devices/"
+                    );
+                }
+                const device = await Device.create({
                         name,
                         feature: description,
-                        img: fileLocation,
                         userId,
                         descriptionText,
-                        price: value,
-                    });
-                } else {
-                    device = await Device.create({
-                        name,
-                        feature: description,
                         img: fileLocation,
-                        userId,
-                        descriptionText,
                         goodId,
                         price: +value,
                     });
-                }
-            }
+
             return res.json(device);
         } catch (e) {
             appendFiles(`\n603: ${e.message}`);

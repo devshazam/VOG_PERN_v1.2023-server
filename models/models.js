@@ -80,6 +80,14 @@ const BasketDevice = sequelize.define('basket_device', {
 })
 
 
+Device.hasMany(BasketDevice)
+BasketDevice.belongsTo(Device)
+
+Basket.hasMany(BasketDevice)
+BasketDevice.belongsTo(Basket)
+
+User.hasOne(Basket)
+Basket.belongsTo(User)
 
 Orders.hasMany(Device)
 Device.belongsTo(Orders)
@@ -109,6 +117,9 @@ module.exports = {
     Goods, 
     Requisites,
     Orders,
+    Basket, 
+    BasketDevice,
+
 }
 
 
