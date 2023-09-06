@@ -7,7 +7,6 @@ const {
     Device,
     Requisites,
     User,
-    Basket,
     BasketDevice,
     Orders,
 } = require("../models/models");
@@ -15,7 +14,9 @@ const ApiError = require("../error/ApiError");
 const { fileUploadCustom, fileDelete } = require("../S3/s3Upload");
 
 class DeviceController {
-    // POST(_1_): `api/device/` + `/`
+
+
+    // POST(_1_):
     async createDevice(req, res, next) {
         let { name, value, description, descriptionText, userId, goodId } =
             req.body;
@@ -47,60 +48,121 @@ class DeviceController {
         }
     }
 
-    // GET(_2_): `api/device/` + `/admin/devices-view/`
-    async allOrdersAdmin(req, res, next) {
-        let { itemSort, orderSort, limit, page, id, filter, userId } =
-            req.query;
+
+    // POST
+    async createRequisites(req, res, next) {
+        const {
+            directorFullName,
+            inn,
+            ogrn,
+            bik,
+            checkingAccount,
+            bankName,
+            bankAddress,
+            korAccount,
+            orgFullName,
+            legalAddress,
+            userId,
+        } = req.body;
+        try {
+            const requisites = await Requisites.create({
+                director_full_name: directorFullName,
+                inn,
+                ogrn,
+                bik,
+                checking_account: checkingAccount,
+                bank_name: bankName,
+                bank_address: bankAddress,
+                kor_account: korAccount,
+                org_full_name: orgFullName,
+                legal_address: legalAddress,
+                userId,
+            });
+            return res.json(requisites);
+        } catch (e) {
+            appendFiles(`\n603: ${e.message}`);
+            return next(ApiError.internal(`603: ${e.message}`));
+        }
+    }
+
+
+    // GET
+    async ordersAdminList(req, res, next) {
+        let { itemSort, orderSort, page, userId } = req.body;
         page = page || 1;
-        limit = limit || 10;
+        let limit = 10;
         itemSort = itemSort || "createdAt";
         orderSort = orderSort || "ASC";
         let offset = page * limit - limit;
-        let devices;
-        // console.log(id);
-        // if (id)
-        if (userId) {
-            try {
-                devices = await Device.findAndCountAll({
-                    where: { userId: userId },
-                    order: [[itemSort, orderSort]],
-                    limit,
-                    offset,
-                });
-                return res.json(devices);
-            } catch (e) {
-                appendFiles(`\n604: ${e.message}`);
-                return next(ApiError.internal(`604: ${e.message}`));
-            }
-        }
-        if (id == "0") {
-            try {
-                devices = await Device.findAndCountAll({
-                    where: { status_pay: true, name: filter },
-                    order: [[itemSort, orderSort]],
-                    limit,
-                    offset,
-                });
-                return res.json(devices);
-            } catch (e) {
-                appendFiles(`\n604: ${e.message}`);
-                return next(ApiError.internal(`604: ${e.message}`));
-            }
-        } else {
-            try {
-                devices = await Device.findAndCountAll({
-                    where: { id: id },
-                    order: [[itemSort, orderSort]],
-                    limit,
-                    offset,
-                });
-                return res.json(devices);
-            } catch (e) {
-                appendFiles(`\n604: ${e.message}`);
-                return next(ApiError.internal(`604: ${e.message}`));
-            }
+        try{
+            const order = await Orders.findAndCountAll({
+                where: { userId },
+                order: [[itemSort, orderSort]],
+                limit,
+                offset,
+            });
+            return res.json(order);
+        } catch (e) {
+            appendFiles(`\n604: ${e.message}`);
+            return next(ApiError.internal(`604: ${e.message}`));
         }
     }
+
+
+    
+    // GET(_2_):
+    // async allOrdersAdmin(req, res, next) {
+    //     let { itemSort, orderSort, limit, page, id, filter, userId } =
+    //         req.query;
+    //     page = page || 1;
+    //     limit = limit || 10;
+    //     itemSort = itemSort || "createdAt";
+    //     orderSort = orderSort || "ASC";
+    //     let offset = page * limit - limit;
+    //     let devices;
+        
+    //     if (userId) {
+    //         try {
+    //             devices = await Device.findAndCountAll({
+    //                 where: { userId: userId },
+    //                 order: [[itemSort, orderSort]],
+    //                 limit,
+    //                 offset,
+    //             });
+    //             return res.json(devices);
+    //         } catch (e) {
+    //             appendFiles(`\n604: ${e.message}`);
+    //             return next(ApiError.internal(`604: ${e.message}`));
+    //         }
+    //     }
+    //     if (id == "0") {
+    //         try {
+    //             devices = await Device.findAndCountAll({
+    //                 where: { status_pay: true, name: filter },
+    //                 order: [[itemSort, orderSort]],
+    //                 limit,
+    //                 offset,
+    //             });
+    //             return res.json(devices);
+    //         } catch (e) {
+    //             appendFiles(`\n604: ${e.message}`);
+    //             return next(ApiError.internal(`604: ${e.message}`));
+    //         }
+    //     } else {
+    //         try {
+    //             devices = await Device.findAndCountAll({
+    //                 where: { id: id },
+    //                 order: [[itemSort, orderSort]],
+    //                 limit,
+    //                 offset,
+    //             });
+    //             return res.json(devices);
+    //         } catch (e) {
+    //             appendFiles(`\n604: ${e.message}`);
+    //             return next(ApiError.internal(`604: ${e.message}`));
+    //         }
+    //     }
+    // }
 
     // POST(_3_): `api/device/` + `/delete-item/`
     // изменить статус готовности заказа
@@ -239,7 +301,7 @@ class DeviceController {
 
     // POST(_7_): `api/device/` + `/getpay`
     // оповещение о статусе оплаты юмани TODO - обнуление карзины юзера +
-    async getPay(req, res, next) {
+    async checkPayStatus(req, res, next) {
         // Done
 
         const headersP = {
@@ -326,42 +388,7 @@ class DeviceController {
         }
     }
 
-    async createRequisites(req, res, next) {
-        const {
-            directorFullName,
-            inn,
-            ogrn,
-            bik,
-            checkingAccount,
-            bankName,
-            bankAddress,
-            korAccount,
-            orgFullName,
-            legalAddress,
-            userId,
-        } = req.body;
 
-        try {
-            const requisites = await Requisites.create({
-                director_full_name: directorFullName,
-                inn,
-                ogrn,
-                bik,
-                checking_account: checkingAccount,
-                bank_name: bankName,
-                bank_address: bankAddress,
-                kor_account: korAccount,
-                org_full_name: orgFullName,
-                legal_address: legalAddress,
-                userId,
-            });
-
-            return res.json(requisites);
-        } catch (e) {
-            appendFiles(`\n603: ${e.message}`);
-            return next(ApiError.internal(`603: ${e.message}`));
-        }
-    }
 
     // POST(_8_): `api/device/` + `/recive-order-count`
     // получить все заказы корзины клиента

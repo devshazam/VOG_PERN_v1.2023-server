@@ -40,3 +40,6 @@ notNull Violation: requisites.legal_address cannot be null; Mon Sep 04 2023 11:2
 608: userMid.getBasket is not a function; Wed Sep 06 2023 14:10:10 GMT+0300 (Москва, стандартное время)
 608: WHERE parameter "userId" has invalid "undefined" value; Wed Sep 06 2023 14:13:24 GMT+0300 (Москва, стандартное время)
 608: WHERE parameter "userId" has invalid "undefined" value; Wed Sep 06 2023 14:13:27 GMT+0300 (Москва, стандартное время)
+604: WHERE parameter "userId" has invalid "undefined" value; Wed Sep 06 2023 18:24:47 GMT+0300 (Москва, стандартное время)
+604: WHERE parameter "userId" has invalid "undefined" value; Wed Sep 06 2023 18:26:07 GMT+0300 (Москва, стандартное время)
+604: WHERE parameter "userId" has invalid "undefined" value; Wed Sep 06 2023 18:28:57 GMT+0300 (Москва, стандартное время)
