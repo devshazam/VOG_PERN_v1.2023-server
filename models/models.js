@@ -69,12 +69,13 @@ const Orders = sequelize.define('orders', {
     // Данные товара
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}, 
     value: {type: DataTypes.STRING, allowNull: false}, // Название товара
+    pay_Id: {type: DataTypes.STRING}, // Название товара
     status: {type: DataTypes.BOOLEAN, defaultValue: false, allowNull: false}, // Статус готовности - этот статус работники самостоятельно применяют при обработке заказа
 })
 
-const Basket = sequelize.define('basket', {
-    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-})
+// const Basket = sequelize.define('basket', {
+//     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+// })
 
 const BasketDevice = sequelize.define('basket_device', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
@@ -87,11 +88,11 @@ BasketDevice.belongsTo(Orders)
 Device.hasMany(BasketDevice)
 BasketDevice.belongsTo(Device)
 
-Basket.hasMany(BasketDevice)
-BasketDevice.belongsTo(Basket)
+User.hasMany(BasketDevice)
+BasketDevice.belongsTo(User)
 
-User.hasOne(Basket)
-Basket.belongsTo(User)
+// User.hasOne(Basket)
+// Basket.belongsTo(User)
 
 Orders.hasMany(Device)
 Device.belongsTo(Orders)
@@ -121,7 +122,6 @@ module.exports = {
     Goods, 
     Requisites,
     Orders,
-    Basket, 
     BasketDevice,
 
 }

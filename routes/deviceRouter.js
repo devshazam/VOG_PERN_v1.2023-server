@@ -15,6 +15,8 @@ router.post('/recive-basket-count', deviceController.reciveBasketCount) // № 8
 router.post('/user-pay-goods/', deviceController.getUserGoods) // № 9
 router.post('/fetch-requisites/', deviceController.fetchRequisites) // № 10
 router.post('/create-requisites/', deviceController.createRequisites) // № 11
+router.post('/recive-order-count/', deviceController.reciveOrderCount) // № 11
+router.post('/fetch-order-item/', deviceController.fetchOrderItems) // № 11
 
 
 module.exports = router
