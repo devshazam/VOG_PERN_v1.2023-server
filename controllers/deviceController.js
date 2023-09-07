@@ -7,8 +7,9 @@ const {
     Device,
     Requisites,
     User,
-    BasketDevice,
+    Basket,
     Orders,
+    Review
 } = require("../models/models");
 const ApiError = require("../error/ApiError");
 const { fileUploadCustom, fileDelete } = require("../S3/s3Upload");
@@ -183,22 +184,30 @@ class DeviceController {
     // POST(_4_): `api/device/` + `/delete-basket-item/`
     async deleteItemFromBasket(req, res, next) {
         const { deviceId, userId } = req.body;
-        console.log(deviceId, userId )
+        // console.log( deviceId, userId );
+
+        const getOneGoods = await Device.findOne({ where: {id: deviceId } });
+        console.log(getOneGoods)
+        const q = await getOneGoods.getBasket()
+        // getOneGoods.getBasketDevice()
+        console.log(q)
+
+        return
         try {
             const getOneGoods = await Device.findOne({ where: {id: deviceId } });
             const goods = await Device.destroy({ where: { id: deviceId } });
     console.log(goods, typeof goods)
  
             if (goods == 1) {
-                await BasketDevice.destroy({
-                    where: { deviceId, userId },
+                const qwer = await BasketDevice.destroy({
+                    where: { deviceId, userId }
                 });
+console.log(qwer);
                 if(getOneGoods.img){
                     let mid1 = getOneGoods.img.split("//")[1].split("/");
                     let delObj = { Bucket: mid1[1] + "/" + mid1[2], Key: mid1[3] };
                     const mid2 = await fileDelete(delObj);
                 }
-                
             }
             return res.json(goods);
         } catch (e) {

@@ -74,26 +74,19 @@ const Orders = sequelize.define('orders', {
     status_done: {type: DataTypes.BOOLEAN, defaultValue: false, allowNull: false}, // Статус готовности - этот статус работники самостоятельно применяют при обработке заказа
 })
 
-// const Basket = sequelize.define('basket', {
-//     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-// })
-
-const BasketDevice = sequelize.define('basket_device', {
+const Basket = sequelize.define('basket', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
 })
 
 
-Orders.hasMany(BasketDevice)
-BasketDevice.belongsTo(Orders)
+Orders.hasMany(Basket)
+Basket.belongsTo(Orders)
 
-Device.hasMany(BasketDevice)
-BasketDevice.belongsTo(Device)
+Device.hasOne(Basket)
+Basket.belongsTo(Device)
 
-User.hasMany(BasketDevice)
-BasketDevice.belongsTo(User)
-
-// User.hasOne(Basket)
-// Basket.belongsTo(User)
+User.hasMany(Basket)
+Basket.belongsTo(User)
 
 Orders.hasMany(Device)
 Device.belongsTo(Orders)
@@ -123,7 +116,7 @@ module.exports = {
     Goods, 
     Requisites,
     Orders,
-    BasketDevice,
+    Basket,
 
 }
 
