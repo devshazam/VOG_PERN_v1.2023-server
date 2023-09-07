@@ -70,7 +70,8 @@ const Orders = sequelize.define('orders', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}, 
     value: {type: DataTypes.STRING, allowNull: false}, // Название товара
     pay_Id: {type: DataTypes.STRING}, // Название товара
-    status: {type: DataTypes.BOOLEAN, defaultValue: false, allowNull: false}, // Статус готовности - этот статус работники самостоятельно применяют при обработке заказа
+    status_pay: {type: DataTypes.BOOLEAN, defaultValue: false, allowNull: false}, // Статус готовности - этот статус работники самостоятельно применяют при обработке заказа
+    status_done: {type: DataTypes.BOOLEAN, defaultValue: false, allowNull: false}, // Статус готовности - этот статус работники самостоятельно применяют при обработке заказа
 })
 
 // const Basket = sequelize.define('basket', {

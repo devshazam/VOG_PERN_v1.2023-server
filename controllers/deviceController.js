@@ -88,15 +88,13 @@ class DeviceController {
 
     // GET
     async ordersAdminList(req, res, next) {
-        let { itemSort, orderSort, page, userId } = req.body;
+        let { page } = req.body;
         page = page || 1;
-        let limit = 10;
-        itemSort = itemSort || "createdAt";
-        orderSort = orderSort || "ASC";
+        let limit = 10, itemSort = "createdAt", orderSort = "DESC";
         let offset = page * limit - limit;
         try{
             const order = await Orders.findAndCountAll({
-                where: { userId },
+                // where: { userId },
                 order: [[itemSort, orderSort]],
                 limit,
                 offset,
@@ -166,41 +164,41 @@ class DeviceController {
 
     // POST(_3_): `api/device/` + `/delete-item/`
     // изменить статус готовности заказа
-    async deleteOrdersAdmin(req, res, next) {
-        // Done
-        // createdAt
-        const { id } = req.body;
+    async changeDoneStatusToDone(req, res, next) {
+        const { orderId } = req.body;
         try {
-            const device = await Device.update(
+            const result = await Orders.update(
                 { status_done: true },
-                { where: { id } }
+                { where: { id: orderId } }
             );
-
-            return res.json(device);
+            return res.json(result);
         } catch (e) {
             appendFiles(`\n602: ${e.message}`);
             return next(ApiError.internal(`602: ${e.message}`));
         }
     }
 
+
     // удвалить один заказ
     // POST(_4_): `api/device/` + `/delete-basket-item/`
-    async deleteOneItem(req, res, next) {
+    async deleteItemFromBasket(req, res, next) {
         const { deviceId, userId } = req.body;
+        console.log(deviceId, userId )
         try {
-            const userMid = await User.findOne({ where: { userId } });
-            const basket = await userMid.getBasket();
-
-            const getOneGoods = await Device.findOne({ where: { deviceId } });
-            const goods = await Device.destroy({ where: { deviceId } });
-            if (goods == 1 && getOneGoods.img) {
+            const getOneGoods = await Device.findOne({ where: {id: deviceId } });
+            const goods = await Device.destroy({ where: { id: deviceId } });
+    console.log(goods, typeof goods)
+ 
+            if (goods == 1) {
                 await BasketDevice.destroy({
-                    where: { deviceId, basketId: basket.id },
+                    where: { deviceId, userId },
                 });
-                let mid1 = getOneGoods.img.split("//")[1].split("/");
-                let delObj = { Bucket: mid1[1] + "/" + mid1[2], Key: mid1[3] };
-                const mid2 = await fileDelete(delObj);
-                console.log(mid2);
+                if(getOneGoods.img){
+                    let mid1 = getOneGoods.img.split("//")[1].split("/");
+                    let delObj = { Bucket: mid1[1] + "/" + mid1[2], Key: mid1[3] };
+                    const mid2 = await fileDelete(delObj);
+                }
+                
             }
             return res.json(goods);
         } catch (e) {
@@ -209,23 +207,26 @@ class DeviceController {
         }
     }
 
+
     // получить все заказы корзины клиента
     // POST(_5_): `api/device/` + `/basket`
-    async getBasketItems(req, res, next) {
+    async fetchBasketDevices(req, res, next) {
         const { userId } = req.body;
         try {
             const basketDevices = await BasketDevice.findAll({
                 where: { userId, orderId: null },
             });
             let arrayMid = [];
-
-            for (const basketDevice of basketDevices) {
+            if(basketDevices.length !== 0){
+                for (const basketDevice of basketDevices) {
                 arrayMid.push(
                     await Device.findOne({
                         where: { id: basketDevice.deviceId },
                     })
                 );
             }
+            }
+            
             return res.json(arrayMid);
         } catch (e) {
             appendFiles(`\n605: ${e.message}`);
@@ -396,7 +397,7 @@ class DeviceController {
         const { userId } = req.body;
         try {
             const orders = await Orders.count({
-                where: { userId, status: false },
+                where: { userId, status_pay: false },
             });
 
             return res.json(orders);
@@ -406,21 +407,21 @@ class DeviceController {
         }
     }
 
-    async fetchOrderItems(req, res, next) {
-        const { id } = req.body;
-        console.log(id);
+    async fetchAllDevicesFromOneOrder(req, res, next) {
+        const { orderId } = req.body;
         try {
-            const basketDevices = await BasketDevice.findAll({ where: { id } });
 
-            let arrayMid = [];
-
-            for (const basketDevice of basketDevices) {
-                arrayMid.push(
-                    await Device.findOne({ id: basketDevice.deviceId })
-                );
-            }
-
-            return res.json(arrayMid);
+            const basketDevices = await BasketDevice.findAll({ where: { orderId } });
+            let devices = [];
+                for (const basketDevice of basketDevices) {
+                    devices.push(
+                        await Device.findOne({
+                            where: { id: basketDevice.deviceId },
+                        })
+                    );
+                }
+            
+            return res.json(devices);
         } catch (e) {
             appendFiles(`\n627: ${e.message}`);
             return next(ApiError.internal(`627: ${e.message}`));
