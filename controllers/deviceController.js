@@ -243,15 +243,23 @@ class DeviceController {
 
 
 
+
+
+
+
+
+
+
+
     // оплата товаров из карзины + опустошение корзины
     // POST(_6_): `api/device/` + `/pay-basket-list`
     async paymentForCartItems(req, res, next) {
         const { value, userId } = req.body;
-        const order = await Orders.create({ value, userId });
-        await Basket.update(
-            { orderId: order.id },
-            { where: { userId } }
-        );
+        // const order = await Orders.create({ value, userId });
+        // await Basket.update(
+        //     { orderId: order.id },
+        //     { where: { userId } }
+        // );
 
         // Send to YOOMONEY
         const IdempotenceKey = uuid.v4();
@@ -266,10 +274,7 @@ class DeviceController {
                 ),
         };
         const inputBodyP = {
-            amount: {
-                value: String(value),
-                currency: "RUB",
-            },
+            amount: { value: String(value), currency: "RUB", },
             capture: true,
             // "payment_method_data": {
             //     "type": 'bank_card'
@@ -279,31 +284,58 @@ class DeviceController {
                 return_url: "https://kopi34.ru/payinfo/",
             },
             description: "Оплата на сайте kopi34.ru",
-            metadata: {
-                order_id: order.id,
-            },
+            // metadata: {
+            //     order_id: order.id,
+            // },
         };
 
-        fetch("https://api.yookassa.ru/v3/payments", {
-            method: "POST",
-            body: JSON.stringify(inputBodyP),
-            headers: headersP,
-        })
-            .then(function (res) {
-                return res.json();
-            })
-            .then(function (body) {
-                Orders.update(
-                    { payId: body.id },
-                    { where: { id: order.id } }
-                ).then(function (res) {
-                    return res.json(body);
+//         fetch("https://api.yookassa.ru/v3/payments", {
+//             method: "POST",
+//             body: JSON.stringify(inputBodyP),
+//             headers: headersP,
+//         })
+//             .then(function (res) {
+//                 console.log(res)
+//                 return res.json();
+//             })
+//             .then(function (body) {
+// console.log(body)
+
+//                 // Orders.update(
+//                 //     { payId: body.id },
+//                 //     { where: { id: order.id } }
+//                 // ).then(function (res) {
+//                 //     return res.json(body);
+//                 // });
+//             })
+//             .catch((e) => {
+//                 appendFiles(`\n606: ${e.message}`);
+//                 return next(ApiError.internal(`606: ${e.message}`));
+//             });
+
+
+            try {
+                const numberBasket = await fetch("https://api.yookassa.ru/v3/payments", {
+                    method: "POST",
+                    body: JSON.stringify(inputBodyP),
+                    headers: headersP,
                 });
-            })
-            .catch((e) => {
-                appendFiles(`\n606: ${e.message}`);
-                return next(ApiError.internal(`606: ${e.message}`));
-            });
+console.log(numberBasket)
+console.log(123213123213123)
+                const qwer = await numberBasket.json();
+console.log(qwer)
+return
+                // await Orders.update(
+                //     { payId: body.id },
+                //     { where: { id: order.id } }
+                // ).then(function (res) {
+                //     return res.json(body);
+                // });
+                return res.json(numberBasket);
+            } catch (e) {
+                appendFiles(`\n608: ${e.message}`);
+                return next(ApiError.internal(`608: ${e.message}`));
+            }
     }
 
 

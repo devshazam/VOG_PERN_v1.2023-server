@@ -89,3 +89,5 @@ notNull Violation: requisites.legal_address cannot be null; Mon Sep 04 2023 11:2
 603: Cannot access 'device' before initialization; Fri Sep 08 2023 13:20:44 GMT+0300 (Москва, стандартное время)
 605: WHERE parameter "userId" has invalid "undefined" value; Fri Sep 08 2023 13:46:17 GMT+0300 (Москва, стандартное время)
 605: WHERE parameter "userId" has invalid "undefined" value; Fri Sep 08 2023 13:58:20 GMT+0300 (Москва, стандартное время)
+608: numberBasket.toJson is not a function; Fri Sep 08 2023 19:00:26 GMT+0300 (Москва, стандартное время)
+608: numberBasket.toJSON is not a function; Fri Sep 08 2023 19:01:22 GMT+0300 (Москва, стандартное время)
