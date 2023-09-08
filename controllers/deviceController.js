@@ -13,6 +13,7 @@ const {
 } = require("../models/models");
 const ApiError = require("../error/ApiError");
 const { fileUploadCustom, fileDelete } = require("../S3/s3Upload");
+const sequelize = require('../db')
 
 class DeviceController {
 
@@ -39,8 +40,14 @@ class DeviceController {
                 img: fileLocation,
                 goodId,
                 price: +value,
+                basket: [
+                    {userId}
+                ]
+            },
+            {
+              include: [Basket],
             });
-            await BasketDevice.create({ userId, deviceId: device.id });
+            // await Basket.create({ userId, deviceId: device.id });
 
             return res.json(device);
         } catch (e) {
@@ -180,38 +187,35 @@ class DeviceController {
     }
 
 
-    // удвалить один заказ
+    // удвалить один заказ из корзины
     // POST(_4_): `api/device/` + `/delete-basket-item/`
     async deleteItemFromBasket(req, res, next) {
         const { deviceId, userId } = req.body;
-        // console.log( deviceId, userId );
 
-        const getOneGoods = await Device.findOne({ where: {id: deviceId } });
-        console.log(getOneGoods)
-        const q = await getOneGoods.getBasket()
-        // getOneGoods.getBasketDevice()
-        console.log(q)
-
-        return
+        // const t = await sequelize.transaction()
+        let transaction;
         try {
-            const getOneGoods = await Device.findOne({ where: {id: deviceId } });
-            const goods = await Device.destroy({ where: { id: deviceId } });
-    console.log(goods, typeof goods)
- 
-            if (goods == 1) {
-                const qwer = await BasketDevice.destroy({
-                    where: { deviceId, userId }
-                });
-console.log(qwer);
-                if(getOneGoods.img){
-                    let mid1 = getOneGoods.img.split("//")[1].split("/");
+            transaction = await sequelize.transaction();
+            const basketDestroy = await Basket.destroy({
+                where: { deviceId, userId }, transaction
+            });
+            
+            const deviceMid = await Device.findOne({ where: {id: deviceId } });
+            const deviceDestroy = await Device.destroy({ where: { id: deviceId }, transaction });
+
+            if (basketDestroy && deviceDestroy && deviceMid.img) {
+
+                    let mid1 = deviceMid.img.split("//")[1].split("/");
                     let delObj = { Bucket: mid1[1] + "/" + mid1[2], Key: mid1[3] };
                     const mid2 = await fileDelete(delObj);
-                }
             }
-            return res.json(goods);
+            await transaction.commit();
+            return res.json({message: `successfully saved order`})
         } catch (e) {
             appendFiles(`\n601: ${e.message}`);
+            if(transaction) {
+                await transaction.rollback();
+             }
             return next(ApiError.internal(`601: ${e.message}`));
         }
     }
@@ -222,38 +226,31 @@ console.log(qwer);
     async fetchBasketDevices(req, res, next) {
         const { userId } = req.body;
         try {
-            const basketDevices = await BasketDevice.findAll({
+            const basketMid = await Basket.findAll({
                 where: { userId, orderId: null },
+                attributes: ['deviceId']
             });
-            let arrayMid = [];
-            if(basketDevices.length !== 0){
-                for (const basketDevice of basketDevices) {
-                arrayMid.push(
-                    await Device.findOne({
-                        where: { id: basketDevice.deviceId },
-                    })
-                );
-            }
-            }
-            
-            return res.json(arrayMid);
+            const deviceMid = await Device.findAll({
+                where: { id: basketMid.map(item => item.deviceId) },
+            })
+            return res.json(deviceMid);
         } catch (e) {
             appendFiles(`\n605: ${e.message}`);
             return next(ApiError.internal(`605: ${e.message}`));
         }
     }
 
+
+
+
     // оплата товаров из карзины + опустошение корзины
     // POST(_6_): `api/device/` + `/pay-basket-list`
-    async payBasketList(req, res, next) {
-        const { value, id } = req.body;
-
-        const userMid = await User.findOne({ where: { id } });
-        const basket = await userMid.getBasket();
-        const order = await Orders.create({ value, userId: id });
-        await BasketDevice.update(
+    async paymentForCartItems(req, res, next) {
+        const { value, userId } = req.body;
+        const order = await Orders.create({ value, userId });
+        await Basket.update(
             { orderId: order.id },
-            { where: { basketId: basket.id } }
+            { where: { userId } }
         );
 
         // Send to YOOMONEY
@@ -309,6 +306,11 @@ console.log(qwer);
             });
     }
 
+
+
+
+
+
     // POST(_7_): `api/device/` + `/getpay`
     // оповещение о статусе оплаты юмани TODO - обнуление карзины юзера +
     async checkPayStatus(req, res, next) {
@@ -351,7 +353,7 @@ console.log(qwer);
     async reciveBasketCount(req, res, next) {
         const { userId } = req.body;
         try {
-            const numberBasket = await BasketDevice.count({
+            const numberBasket = await Basket.count({
                 where: { userId, orderId: null },
             });
             return res.json(numberBasket);
@@ -419,18 +421,12 @@ console.log(qwer);
     async fetchAllDevicesFromOneOrder(req, res, next) {
         const { orderId } = req.body;
         try {
-
-            const basketDevices = await BasketDevice.findAll({ where: { orderId } });
-            let devices = [];
-                for (const basketDevice of basketDevices) {
-                    devices.push(
-                        await Device.findOne({
-                            where: { id: basketDevice.deviceId },
-                        })
-                    );
-                }
-            
-            return res.json(devices);
+            const basketMid = await Basket.findAll({ where: { orderId },
+                attributes: ['deviceId'] });
+            const deviceMid = await Device.findAll({
+                where: { id: basketMid.map(item => item.deviceId) },
+            })
+            return res.json(deviceMid);
         } catch (e) {
             appendFiles(`\n627: ${e.message}`);
             return next(ApiError.internal(`627: ${e.message}`));
