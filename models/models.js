@@ -69,7 +69,7 @@ const Orders = sequelize.define('orders', {
     // Данные товара
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}, 
     value: {type: DataTypes.STRING, allowNull: false},
-    pay_Id: {type: DataTypes.STRING}, // Для ID оплаты Юкасса - для отслеживания статуса оплаты
+    pay_id: {type: DataTypes.STRING}, // Для ID оплаты Юкасса - для отслеживания статуса оплаты
     status_pay: {type: DataTypes.BOOLEAN, defaultValue: false, allowNull: false}, // Статус готовности - этот статус работники самостоятельно применяют при обработке заказа
     status_done: {type: DataTypes.BOOLEAN, defaultValue: false, allowNull: false}, // Статус готовности - этот статус работники самостоятельно применяют при обработке заказа
 })

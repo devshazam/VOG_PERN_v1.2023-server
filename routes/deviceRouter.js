@@ -12,6 +12,7 @@ router.post('/delete-item/', deviceController.changeDoneStatusToDone) // № 3
 router.post('/delete-basket-item/', deviceController.deleteItemFromBasket) // № 4
 router.post('/basket/', deviceController.fetchBasketDevices)  // № 5
 router.post('/pay-basket-list/', deviceController.paymentForCartItems) // № 6
+router.post('/getpay/', deviceController.checkPayStatus) // № 7 
 
 
 router.post('/user-pay-goods/', deviceController.getUserGoods) // № 9
@@ -22,7 +23,6 @@ router.post('/fetch-requisites/', deviceController.fetchRequisites) // № 10
 
 
 
-router.post('/getpay/', deviceController.checkPayStatus) // № 7 
 
 
 
