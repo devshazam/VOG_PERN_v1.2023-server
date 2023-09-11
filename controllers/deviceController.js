@@ -265,7 +265,7 @@ class DeviceController {
             // },
             confirmation: {
                 type: "redirect",
-                return_url: "https://kopi34.ru/payinfo/",
+                return_url: "https://kopi34.ru/admin/bar/",
             },
             description: "Оплата на сайте kopi34.ru",
             // metadata: {
@@ -294,9 +294,7 @@ class DeviceController {
     // POST(_7_): `api/device/` + `/getpay`
     // оповещение о статусе оплаты юмани TODO - обнуление карзины юзера +
     async checkPayStatus(req, res, next) {
-        // Done
         const { orderId } = req.body;
-
         const headersP = {
             Authorization:
                 "Basic " +
@@ -304,46 +302,28 @@ class DeviceController {
                     process.env.MARKET_ID + ":" + process.env.SECRET_KEY_UMONEY
                 ),
         };
-
-        
-
         try {
-            const payItemMid = await fetch("https://api.yookassa.ru/v3/payments/" + orderId, {
-                method: "GET",
-                headers: headersP,
-            });
+            const orderMid = await Orders.findOne({where: { id: orderId}});
+            if(orderMid){
+                const payItemMid = await fetch("https://api.yookassa.ru/v3/payments/" + orderMid.pay_id, {
+                    method: "GET",
+                    headers: headersP,
+                });
 
-            const payItem = await payItemMid.json();
+                const payItem = await payItemMid.json();
+                if (payItem.status === "success") {
+                    Orders.update({ status_pay: true }, { where: { id: orderId } });
+                }
 
-
-
-// if (body.status == "success") {
-//                     Orders.update({ status: true }, { where: { id: orderId } });
-//                     return res.json({ status: body.status });
-//                 }
-
-//                 return res.json({ status: body.status });
-
-
-
-            return res.json(newOrder);
+                return res.json({ status: "success!" });
+            }
+            return res.json({ status: "not success!" });
         } catch (e) {
             appendFiles(`\n608: ${e.message}`);
             return next(ApiError.internal(`608: ${e.message}`));
         }
 
     }
-
-
-
-
-
-
-
-
-
-
-
 
     // POST(_8_): `api/device/` + `/recive-basket-count`
     // получить все заказы корзины клиента
@@ -389,7 +369,6 @@ class DeviceController {
             const requisites = await Requisites.findOne({
                 where: { userId: id },
             });
-            console.log(requisites);
             return res.json(requisites);
         } catch (e) {
             appendFiles(`\n603: ${e.message}`);
@@ -427,6 +406,21 @@ class DeviceController {
         } catch (e) {
             appendFiles(`\n627: ${e.message}`);
             return next(ApiError.internal(`627: ${e.message}`));
+        }
+    }
+
+    async fetchUserByOrderId(req, res, next) {
+        const { orderId } = req.body;
+
+        try {
+            const midUser = await Orders.findOne({
+                where: { id: orderId }, 
+                include: [User]
+            });
+            return res.json(midUser);
+        } catch (e) {
+            appendFiles(`\n603: ${e.message}`);
+            return next(ApiError.internal(`603: ${e.message}`));
         }
     }
 }

@@ -72,6 +72,7 @@ const Orders = sequelize.define('orders', {
     pay_id: {type: DataTypes.STRING}, // Для ID оплаты Юкасса - для отслеживания статуса оплаты
     status_pay: {type: DataTypes.BOOLEAN, defaultValue: false, allowNull: false}, // Статус готовности - этот статус работники самостоятельно применяют при обработке заказа
     status_done: {type: DataTypes.BOOLEAN, defaultValue: false, allowNull: false}, // Статус готовности - этот статус работники самостоятельно применяют при обработке заказа
+    cashless_status: {type: DataTypes.BOOLEAN, defaultValue: false, allowNull: false}, // Статус готовности - этот статус работники самостоятельно применяют при обработке заказа
 })
 
 const Basket = sequelize.define('basket', {
