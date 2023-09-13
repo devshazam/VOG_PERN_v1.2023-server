@@ -1,4 +1,4 @@
-const { Goods } = require("../models/models");
+const { Goods, Orders } = require("../models/models");
 const ApiError = require("../error/ApiError");
 const { fileUploadCustom, fileDelete, xlsxUploadCustom } = require("../S3/s3Upload");
 const uuid = require("uuid");
@@ -197,6 +197,38 @@ console.log(`${__dirname}/static/${fileName}`)
                 )
             );
         }
+    }
+
+
+    async fetchListOfGoods(req, res, next) {
+        let { itemSort, orderSort, limit, page, filter, barcode } = req.body;
+        page = page || 1;
+        limit = limit || 10;
+        itemSort = itemSort || "createdAt";
+        orderSort = orderSort || "ASC";
+        let offset = page * limit - limit;
+        
+        try {
+            if(barcode){
+                const midGoods = await Goods.findAndCountAll({
+                    where: { barcode }
+                });
+                return res.json(midGoods);
+            }else{
+                const midGoods = await Goods.findAndCountAll({
+                    where: { group: filter },
+                    order: [[itemSort, orderSort]],
+                    limit,
+                    offset,
+                });
+                return res.json(midGoods);
+            }
+            
+        } catch (e) {
+            appendFiles(`\n638: ${e.message}`);
+            return next(ApiError.internal(`638: ${e.message}`));
+        }
+
     }
 }
 

@@ -334,6 +334,8 @@ class DeviceController {
                 where: { userId, orderId: null },
             });
             return res.json(numberBasket);
+            // return res.status(401).json({message: 'ghbdtn'});
+
         } catch (e) {
             appendFiles(`\n608: ${e.message}`);
             return next(ApiError.internal(`608: ${e.message}`));

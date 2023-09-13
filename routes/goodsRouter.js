@@ -10,6 +10,7 @@ router.get('/fetch-xsl-file', goodsController.buildXls) // № 6
 
 router.post('/', goodsController.createGoods) // № 1
 router.post('/update-one', goodsController.updateGoods) // № 5
+router.post('/fetch-list-of-goods', goodsController.fetchListOfGoods) // № 5
 router.post('/parce-xls', goodsController.parceXls) // № 7
 
 
