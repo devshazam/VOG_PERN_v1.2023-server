@@ -69,10 +69,16 @@ class GoodsController {
 
     // GET(_3_): `api/goods/` + `/fetch-one`
     async fetchOneGoods(req, res, next) {
-        let { id } = req.query;
+        let { goodsId, barcode } = req.body;
         try {
-            const goods = await Goods.findOne({ where: { id } });
-            return res.json(goods);
+            if(goodsId){
+                const goods = await Goods.findOne({ where: { id: goodsId } });
+                return res.json(goods);
+            }else{
+                const goods = await Goods.findOne({ where: { barcode } });
+                return res.json(goods);
+            }
+            
         } catch (e) {
             appendFiles(`\n612: ${e.message}`)
             return next(
@@ -229,6 +235,46 @@ console.log(`${__dirname}/static/${fileName}`)
             return next(ApiError.internal(`638: ${e.message}`));
         }
 
+    }
+
+
+    async ChangeGoodsParams(req, res, next) {
+        let { goodsId, name, description, group, price, priceImg, summa, artikul } = req.body;
+
+        try {
+            let midGoods = await Goods.findOne({ where: { id: goodsId } });
+            if(!midGoods) return res.status(506).json({message: "Товар не найден!"});
+
+            name = name || midGoods.name;
+            description = description || midGoods.description;
+            group = group || midGoods.group;
+            price = price || midGoods.price;
+            priceImg = priceImg || midGoods.price_img;
+            summa = summa || midGoods.summa;
+            artikul = artikul || midGoods.artikul;
+
+            midGoods.set({
+                name,
+                description,
+                group,
+                price,
+                price_img: priceImg,
+                summa, 
+                artikul
+              });
+              
+            const goods = await midGoods.save();
+            console.log(goods)
+ 
+            return res.json(goods);
+        } catch (e) {
+            appendFiles(`\n612: ${e.message}`)
+            return next(
+                ApiError.internal(
+                    `612: ${e.message}`
+                )
+            );
+        }
     }
 }
 
