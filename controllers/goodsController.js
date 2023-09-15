@@ -180,10 +180,8 @@ class GoodsController {
 // STOPED 
     // POST(_7_): `api/goods/` + `/parce-xls`
     async parceXls(req, res, next) {
-
-        try {const img = req.files.img
-            console.log(req.files.img.name)
-            
+        try {
+            const img = req.files.wsx;
             const fileName = uuid.v4() + img.name;
             await img.mv(path.resolve(__dirname, "..", "static", fileName));
 
