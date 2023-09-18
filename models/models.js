@@ -81,6 +81,12 @@ const Basket = sequelize.define('basket', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
 })
 
+const Price = sequelize.define('price', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    value: {type: DataTypes.JSON, allowNull: false},
+
+})
+
 
 Orders.hasMany(Basket)
 Basket.belongsTo(Orders)
@@ -120,7 +126,7 @@ module.exports = {
     Requisites,
     Orders,
     Basket,
-
+    Price
 }
 
 
