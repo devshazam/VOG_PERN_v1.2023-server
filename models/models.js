@@ -87,6 +87,12 @@ const Price = sequelize.define('price', {
 
 })
 
+const Jsona = sequelize.define('jsona', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    value: {type: DataTypes.JSON, allowNull: false},
+},
+{ timestamps: false })
+
 
 Orders.hasMany(Basket)
 Basket.belongsTo(Orders)
@@ -126,7 +132,8 @@ module.exports = {
     Requisites,
     Orders,
     Basket,
-    Price
+    Price,
+    Jsona
 }
 
 
