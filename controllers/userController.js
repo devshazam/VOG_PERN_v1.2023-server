@@ -21,12 +21,12 @@ class UserController {
             const {name, email, password, phone} = req.body
             const role = 'USER';
             if (!email || !password) {
-                return next(ApiError.badRequest('Некорректный email или password'))
+                return next(ApiError.internal('Некорректный email или password'))
             }
         // проверка дублирования
             const candidate = await User.findOne({where: {email}})
             if (candidate) {
-                return next(ApiError.badRequest('Пользователь с таким email уже существует'))
+                return next(ApiError.internal('Пользователь с таким email уже существует'))
             }
         // Хеширование паролей
             const hashPassword = await bcrypt.hash(password, 5)

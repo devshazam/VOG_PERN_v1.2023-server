@@ -13,6 +13,7 @@ router.post('/update-one', goodsController.updateGoods) // № 5
 router.post('/fetch-list-of-goods', goodsController.fetchListOfGoods) // № 5
 router.post('/parce-xls', goodsController.parceXls) // № 7
 router.post('/change-goods-params', goodsController.ChangeGoodsParams) // № 5
+router.post('/increase-price-by-procent', goodsController.increasePriceByProcent) // № 5
 
 
 module.exports = router

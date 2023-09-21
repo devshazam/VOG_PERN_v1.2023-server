@@ -7,6 +7,8 @@ const { appendFiles } = require("../error-log/LogHandling");
 
 const fs = require('fs')
 const xlsx = require('node-xlsx');
+const sequelize = require('../db')
+
 
 class GoodsController {
 
@@ -274,6 +276,38 @@ console.log(`${__dirname}/static/${fileName}`)
             );
         }
     }
+
+    async increasePriceByProcent(req, res, next) {
+        let { procent, group } = req.body;
+        let transaction;
+
+        try {
+            transaction = await sequelize.transaction();
+            const data = await Goods.findAll({where: {group},
+                attributes: ['id', 'price', 'price_img']
+              })
+            //   console.log(data)
+          for(let item of data){
+            await Goods.update({price: Math.ceil(item.price * ( 1 + procent / 100)), price_img: Math.ceil(item.price_img * ( 1 + procent / 100))}, {where: {id: item.id}, transaction})
+          }
+            await transaction.commit();
+            return res.json({message: 'success!'});
+        } catch (e) {
+            
+            appendFiles(`\n615: ${e.message}`)
+            if(transaction) {
+                await transaction.rollback();
+             }
+            return next(
+                ApiError.badRequest(
+                    `615: ${e.message}`
+                )
+            );
+        }
+    }
+
+
+    
 }
 
 module.exports = new GoodsController();

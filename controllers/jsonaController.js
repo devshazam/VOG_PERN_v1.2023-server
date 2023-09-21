@@ -128,10 +128,21 @@ class JsonaController {
                     ]
                 ]
             ];
-            const myJSON = JSON.stringify(vizit)
+            function midOne(array){
+                array.map(item => {
+                    if(Array.isArray(item)){
+                        midOne(item)
+                    }else{
+                        if(!item){
+                            return res.status(432).json({message: 'Не корректно заполнен файл'});
+                        }
+                    }
+                })
+            }
+            midOne(vizit)
 
             const goods = await Jsona.update({
-                value: myJSON
+                value: JSON.stringify(vizit)
             }, {where: {id: 2}});
 
 
