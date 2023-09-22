@@ -239,11 +239,11 @@ console.log(`${__dirname}/static/${fileName}`)
 
 
     async ChangeGoodsParams(req, res, next) {
-        let { goodsId, name, description, group, price, priceImg, summa, artikul } = req.body;
+        let { goodsId, name, description, group, price, priceImg, summa, artikul, barcode } = req.body;
 
         try {
-            let midGoods = await Goods.findOne({ where: { id: goodsId } });
-            if(!midGoods) return res.status(506).json({message: "Товар не найден!"});
+            let midGoods = await Goods.findByPk(goodsId);
+            if(!midGoods) return res.status(432).json({message: "Товар не найден!"});
 
             name = name || midGoods.name;
             description = description || midGoods.description;
@@ -251,6 +251,7 @@ console.log(`${__dirname}/static/${fileName}`)
             price = price || midGoods.price;
             priceImg = priceImg || midGoods.price_img;
             summa = summa || midGoods.summa;
+            barcode = barcode || midGoods.barcode;
             artikul = artikul || midGoods.artikul;
 
             midGoods.set({
@@ -260,11 +261,12 @@ console.log(`${__dirname}/static/${fileName}`)
                 price,
                 price_img: priceImg,
                 summa, 
-                artikul
+                artikul,
+                barcode
               });
               
             const goods = await midGoods.save();
-            console.log(goods)
+            // console.log(goods)
  
             return res.json(goods);
         } catch (e) {
