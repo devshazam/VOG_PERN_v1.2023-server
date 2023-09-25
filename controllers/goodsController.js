@@ -1,4 +1,4 @@
-const { Goods, Orders } = require("../models/models");
+const { Goods, Orders, Price } = require("../models/models");
 const ApiError = require("../error/ApiError");
 const { fileUploadCustom, fileDelete, xlsxUploadCustom } = require("../S3/s3Upload");
 const uuid = require("uuid");
@@ -309,6 +309,44 @@ console.log(`${__dirname}/static/${fileName}`)
     }
 
 
+        async createPriceTable(req, res, next) {
+            const { name, note, price } = req.body;
+            
+            try {
+
+                const result = await Price.create({
+                    value: JSON.stringify({ name, note, price })
+                });
+        
+                return res.json(result);
+            } catch (e) {
+                appendFiles(`\n610: ${e.message}`)
+                return next(
+                    ApiError.internal(`610: ${e.message}`)
+                );
+            }
+    
+    
+        }
+
+        async fetchOnePrice(req, res, next) {
+            const { priceId } = req.body;
+            
+            try {
+
+                const result = await Price.findByPk(priceId);
+                console.log(result)
+        
+                return res.json(result);
+            } catch (e) {
+                appendFiles(`\n610: ${e.message}`)
+                return next(
+                    ApiError.internal(`610: ${e.message}`)
+                );
+            }
+    
+    
+        }
     
 }
 

@@ -282,11 +282,12 @@ class DeviceController {
             const payItem = await payItemMid.json();
 
             const newOrder = await Orders.create({ pay_id: payItem.id, value, userId });
+            await Basket.update({ orderId: newOrder.id}, {where: { userId }})
 
-            return res.json(newOrder);
+            return res.json(payItem);
         } catch (e) {
-            appendFiles(`\n608: ${e.message}`);
-            return next(ApiError.internal(`608: ${e.message}`));
+            appendFiles(`\n629: ${e.message}`);
+            return next(ApiError.internal(`629: ${e.message}`));
         }
     }
 
@@ -295,6 +296,7 @@ class DeviceController {
     // оповещение о статусе оплаты юмани TODO - обнуление карзины юзера +
     async checkPayStatus(req, res, next) {
         const { orderId } = req.body;
+
         const headersP = {
             Authorization:
                 "Basic " +
@@ -303,7 +305,8 @@ class DeviceController {
                 ),
         };
         try {
-            const orderMid = await Orders.findOne({where: { id: orderId}});
+            const orderMid = await Orders.findByPk(orderId);
+
             if(orderMid){
                 const payItemMid = await fetch("https://api.yookassa.ru/v3/payments/" + orderMid.pay_id, {
                     method: "GET",
@@ -311,6 +314,7 @@ class DeviceController {
                 });
 
                 const payItem = await payItemMid.json();
+                console.log(payItem)
                 if (payItem.status === "success") {
                     Orders.update({ status_pay: true }, { where: { id: orderId } });
                 }
@@ -319,8 +323,8 @@ class DeviceController {
             }
             return res.json({ status: "not success!" });
         } catch (e) {
-            appendFiles(`\n608: ${e.message}`);
-            return next(ApiError.internal(`608: ${e.message}`));
+            appendFiles(`\n634: ${e.message}`);
+            return next(ApiError.internal(`634: ${e.message}`));
         }
 
     }
@@ -391,8 +395,8 @@ class DeviceController {
 
             return res.json(orders);
         } catch (e) {
-            appendFiles(`\n608: ${e.message}`);
-            return next(ApiError.internal(`608: ${e.message}`));
+            appendFiles(`\n628: ${e.message}`);
+            return next(ApiError.internal(`628: ${e.message}`));
         }
     }
 
