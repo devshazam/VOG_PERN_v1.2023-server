@@ -348,6 +348,62 @@ console.log(`${__dirname}/static/${fileName}`)
     
         }
     
+
+        async updatePriceTable(req, res, next) {
+            const { name, note, price, priceId } = req.body;
+            
+            try {
+
+                const result = await Price.update({
+                    value: JSON.stringify({ name, note, price })
+                }, {where: {id: priceId}});
+        
+                return res.json(result);
+            } catch (e) {
+                appendFiles(`\n610: ${e.message}`)
+                return next(
+                    ApiError.internal(`610: ${e.message}`)
+                );
+            }
+    
+    
+        }
+
+        
+        async updateGoodsByExel(req, res, next) {
+            const img = req.files.image;
+
+        try {
+
+            const fileName = uuid.v4() + img.name;
+            await img.mv(path.resolve(__dirname, "..", "static", fileName));
+
+            const workSheetsFromFile = xlsx.parse(`${__dirname}/../static/${fileName}`);
+            console.log(workSheetsFromFile[0].data)
+
+            let midArray = workSheetsFromFile[0].data
+
+            for(let x of midArray){
+                if(!x[0]) break;   
+                if(x[0].search(/\d{5}/) === -1) return res.status(432).json({message: 'артикул не соответствует'});
+
+                let newGoods = await Goods.increment({summa: +x[2]}, {where: {artikul: x[0]}}) 
+        
+            }
+
+            await fs.promises.unlink(__dirname + "/../" + "static/" + fileName); 
+
+
+            return res.json({success: true});
+            } catch (e) {
+                appendFiles(`\n610: ${e.message}`)
+                return next(
+                    ApiError.internal(`610: ${e.message}`)
+                );
+            }
+    
+    
+        }
 }
 
 module.exports = new GoodsController();

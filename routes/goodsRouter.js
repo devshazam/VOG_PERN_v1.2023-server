@@ -16,6 +16,8 @@ router.post('/change-goods-params', goodsController.ChangeGoodsParams) // № 5
 router.post('/increase-price-by-procent', goodsController.increasePriceByProcent) // № 5
 router.post('/create-price-table', goodsController.createPriceTable) // № 5
 router.post('/fetch-one-price', goodsController.fetchOnePrice) // № 5
+router.post('/update-price-table', goodsController.updatePriceTable) // № 5
+router.post('/update-by-exel', goodsController.updateGoodsByExel) // № 5
 
 
 module.exports = router
