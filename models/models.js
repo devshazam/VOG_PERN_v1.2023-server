@@ -48,7 +48,7 @@ const Goods = sequelize.define('goods', {
     price_img: {type: DataTypes.STRING, allowNull: false}, // Новая цена
     artikul: {type: DataTypes.STRING}, // артикул товара
     group: {type: DataTypes.STRING, allowNull: false}, // группа товара
-    summa: {type: DataTypes.INTEGER}, // группа товара
+    summa: {type: DataTypes.INTEGER, defaultValue: 0, allowNull: false}, // группа товара
 
 })
 
