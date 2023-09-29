@@ -282,7 +282,7 @@ class DeviceController {
             const payItem = await payItemMid.json();
 
             const newOrder = await Orders.create({ pay_id: payItem.id, value, userId });
-            await Basket.update({ orderId: newOrder.id}, {where: { userId }})
+            await Basket.update({ orderId: newOrder.id}, {where: { userId, orderId: null }})
 
             return res.json(payItem);
         } catch (e) {
