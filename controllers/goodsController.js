@@ -1,4 +1,4 @@
-const { Goods, Orders, Price } = require("../models/models");
+const { Goods, Orders, Price, Jsona } = require("../models/models");
 const ApiError = require("../error/ApiError");
 const { fileUploadCustom, fileDelete, xlsxUploadCustom } = require("../S3/s3Upload");
 const uuid = require("uuid");
@@ -405,6 +405,93 @@ console.log(`${__dirname}/static/${fileName}`)
     
     
         }
+
+
+        async updatePriceTableB(req, res, next) {
+            const { name, note, price: a } = req.body;
+            // console.log(a)
+            let transaction;
+            try {
+                transaction = await sequelize.transaction();
+                const vizit = [
+                    [
+                        [ [ a[0].a, a[0].b, a[0].c, a[0].d ], [ a[1].a, a[1].b, a[1].c, a[1].d ], [ a[2].a, a[2].b, a[2].c, a[2].d ] ],
+                        [ [ a[3].a, a[3].b, a[3].c, a[3].d ], [ a[4].a, a[4].b, a[4].c, a[4].d ], [ a[5].a, a[5].b, a[5].c, a[5].d ] ], 
+                        [ [ a[6].a, a[6].b, a[6].c, a[6].d ], [ a[7].a, a[7].b, a[7].c, a[7].d ], [ a[8].a, a[8].b, a[8].c, a[8].d ] ]
+                    ],
+                    [
+                        [ [ a[9].a, a[9].b, a[9].c, a[9].d ], [ a[10].a, a[10].b, a[10].c, a[10].d ], [ a[11].a, a[11].b, a[11].c, a[11].d ] ],
+                        [ [ a[12].a, a[12].b, a[12].c, a[12].d ], [ a[13].a, a[13].b, a[13].c, a[13].d ], [ a[14].a, a[14].b, a[14].c, a[14].d ] ],
+                        [ [ a[15].a, a[15].b, a[15].c, a[15].d ], [ a[16].a, a[16].b, a[16].c, a[16].d ], [ a[17].a, a[17].b, a[17].c, a[17].d ] ]
+                    ]
+                ];
+
+                const goods = await Jsona.update({
+                    value: JSON.stringify(vizit)
+                }, {where: {id: 2}, transaction});
+
+                const result = await Price.update({
+                    value: JSON.stringify({ name, note, price: a })
+                }, {where: {id: 14}, transaction});
+
+                await transaction.commit();
+
+                return res.json(result);
+            } catch (e) {
+                appendFiles(`\n610: ${e.message}`)
+                if(transaction) {
+                    await transaction.rollback();
+                 }
+                return next(
+                    ApiError.internal(`610: ${e.message}`)
+                );
+            }
+        }
+
+
+
+        async updatePriceTableC(req, res, next) {
+            const { name, note, price: a } = req.body;
+            // console.log(a)
+            let transaction;
+            try {
+                transaction = await sequelize.transaction();
+                const vizit = [
+                    [
+                        [ a[0].a, a[1].a, a[2].a, a[3].a ], 
+                        [ a[0].b, a[1].b, a[2].b, a[3].b ], 
+                        [ a[0].c, a[1].c, a[2].c, a[3].c ],
+                        [ a[0].d, a[1].d, a[2].d, a[3].d ], 
+                        [ a[0].e, a[1].e, a[2].e, a[3].e ], 
+                        [ a[0].f, a[1].f, a[2].f, a[3].f ],
+                        [ a[0].g, a[1].g, a[2].g, a[3].g ], 
+                        [ a[0].h, a[1].h, a[2].h, a[3].h ]
+                    ],
+                    [ a[4].a, a[4].a, a[4].a, a[4].a, a[4].a, a[4].a, a[4].a, ]
+                ];
+
+                const goods = await Jsona.update({
+                    value: JSON.stringify(vizit)
+                }, {where: {id: 3}, transaction});
+
+                const result = await Price.update({
+                    value: JSON.stringify({ name, note, price: a })
+                }, {where: {id: 17}, transaction});
+
+                await transaction.commit();
+
+                return res.json(result);
+            } catch (e) {
+                appendFiles(`\n610: ${e.message}`)
+                if(transaction) {
+                    await transaction.rollback();
+                 }
+                return next(
+                    ApiError.internal(`610: ${e.message}`)
+                );
+            }
+        }
+
 }
 
 module.exports = new GoodsController();
