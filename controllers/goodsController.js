@@ -491,6 +491,50 @@ console.log(`${__dirname}/static/${fileName}`)
                 );
             }
         }
+        
+        
+        
+        async updatePriceTableD(req, res, next) {
+            const { name, note, price: a } = req.body;
+            // console.log(a)
+            let transaction;
+            try {
+                transaction = await sequelize.transaction();
+                const vizit = [
+                    [
+                        [ a[0].a, a[1].a ], 
+                        [ a[0].b, a[1].b ], 
+                        [ a[0].c, a[1].c ], 
+                        [ a[0].d, a[1].d ], 
+                        [ a[0].e, a[1].e ], 
+                        [ a[0].f, a[1].f ], 
+                        [ a[0].g, a[1].g ]
+                    ],
+                    a[2].a,
+                    a[2].b
+                ];
+
+                const goods = await Jsona.update({
+                    value: JSON.stringify(vizit)
+                }, {where: {id: 4}, transaction});
+
+                const result = await Price.update({
+                    value: JSON.stringify({ name, note, price: a })
+                }, {where: {id: 19}, transaction});
+
+                await transaction.commit();
+
+                return res.json(result);
+            } catch (e) {
+                appendFiles(`\n610: ${e.message}`)
+                if(transaction) {
+                    await transaction.rollback();
+                 }
+                return next(
+                    ApiError.internal(`610: ${e.message}`)
+                );
+            }
+        }
 
 }
 

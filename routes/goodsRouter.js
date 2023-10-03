@@ -19,6 +19,7 @@ router.post('/fetch-one-price', goodsController.fetchOnePrice) // № 5
 router.post('/update-price-table', goodsController.updatePriceTable) // № 5
 router.post('/update-price-table-b', goodsController.updatePriceTableB) // № 5
 router.post('/update-price-table-c', goodsController.updatePriceTableC) // № 5
+router.post('/update-price-table-d', goodsController.updatePriceTableD) // № 5
 router.post('/update-by-exel', goodsController.updateGoodsByExel) // № 5
 
 
