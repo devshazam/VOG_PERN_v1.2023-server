@@ -170,8 +170,7 @@ class DeviceController {
     //     }
     // }
 
-    // POST(_3_): `api/device/` + `/delete-item/`
-    // изменить статус готовности заказа
+
     async changeDoneStatusToDone(req, res, next) {
         const { orderId } = req.body;
         try {
@@ -179,7 +178,10 @@ class DeviceController {
                 { status_done: true },
                 { where: { id: orderId } }
             );
-            return res.json(result);
+
+            if(!result[0]) return res.status(432).json({message: "Заказ не найден!   ~ 201."});
+
+            return res.json({status: 'success'});
         } catch (e) {
             appendFiles(`\n602: ${e.message}`);
             return next(ApiError.internal(`602: ${e.message}`));
@@ -187,8 +189,7 @@ class DeviceController {
     }
 
 
-    // удвалить один заказ из корзины
-    // POST(_4_): `api/device/` + `/delete-basket-item/`
+
     async deleteItemFromBasket(req, res, next) {
         const { deviceId, userId } = req.body;
 
@@ -314,14 +315,15 @@ class DeviceController {
                 });
 
                 const payItem = await payItemMid.json();
-                console.log(payItem)
-                if (payItem.status === "success") {
-                    Orders.update({ status_pay: true }, { where: { id: orderId } });
-                }
 
-                return res.json({ status: "success!" });
+                if (payItem.status === "success") {
+                    orderMid.set({ status_pay: true });
+                    await jane.save(); 
+                }else if(payItem.status === "canceled"){
+                    await orderMid.destroy();
+                }
             }
-            return res.json({ status: "not success!" });
+            return res.json({ status: "success!" });
         } catch (e) {
             appendFiles(`\n634: ${e.message}`);
             return next(ApiError.internal(`634: ${e.message}`));
@@ -329,8 +331,7 @@ class DeviceController {
 
     }
 
-    // POST(_8_): `api/device/` + `/recive-basket-count`
-    // получить все заказы корзины клиента
+
     async reciveBasketCount(req, res, next) {
         const { userId } = req.body;
         try {
@@ -338,15 +339,14 @@ class DeviceController {
                 where: { userId, orderId: null },
             });
             return res.json(numberBasket);
-            // return res.status(401).json({message: 'ghbdtn'});
-
         } catch (e) {
             appendFiles(`\n608: ${e.message}`);
             return next(ApiError.internal(`608: ${e.message}`));
         }
     }
 
-    // POST(_9_): `api/device/` + `/user-pay-goods/`
+
+    
     async getUserGoods(req, res, next) {
         let { page, userId } = req.body;
         let limit = 10;
@@ -367,7 +367,9 @@ class DeviceController {
         }
     }
 
-    // POST(_10_): `api/device/` + `/fetch-requisites`
+
+    
+
     async fetchRequisites(req, res, next) {
         const { id } = req.body;
 
@@ -384,8 +386,8 @@ class DeviceController {
 
 
 
-    // POST(_8_): `api/device/` + `/recive-order-count`
-    // получить все заказы корзины клиента
+
+    
     async reciveOrderCount(req, res, next) {
         const { userId } = req.body;
         try {
@@ -399,6 +401,8 @@ class DeviceController {
             return next(ApiError.internal(`628: ${e.message}`));
         }
     }
+
+
 
     async fetchAllDevicesFromOneOrder(req, res, next) {
         const { orderId } = req.body;
@@ -415,6 +419,8 @@ class DeviceController {
         }
     }
 
+
+    
     async fetchUserByOrderId(req, res, next) {
         const { orderId } = req.body;
 

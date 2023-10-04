@@ -18,7 +18,7 @@ class GoodsController {
 
         try {
             const fileLocation = await fileUploadCustom(req.files.image, "goods/"); // вставить
-            console.log(fileLocation);
+
             const goods = await Goods.create({
                 name,
                 description,
@@ -43,7 +43,9 @@ class GoodsController {
     }
 
 
-    // GET(_2_): `api/goods/` + `/fetch-list`
+
+    
+
     async fetchGoodsList(req, res, next) {
         let { itemSort, orderSort, limit, page, categoryIt } = req.query;
         page = +page || 1;
@@ -70,7 +72,9 @@ class GoodsController {
         }
     }   
 
-    // GET(_3_): `api/goods/` + `/fetch-one`
+
+    
+
     async fetchOneGoods(req, res, next) {
         let { goodsId, barcode } = req.body;
         try {
@@ -92,7 +96,9 @@ class GoodsController {
         }
     }
 
-    // GET(_4_): `api/goods/` + `/delete-one`
+
+    
+
     async deleteOneGoods(req, res, next) {
         let { id } = req.query;
         try {
@@ -115,7 +121,9 @@ class GoodsController {
         }
     }
 
-    // POST(_5_): `api/goods/` + `/update-one`
+
+    
+// updateGoods
     async updateGoods(req, res, next) {
         const { name, description, group, price, userId, id, artikul } = req.body;
 
@@ -151,7 +159,9 @@ class GoodsController {
 
 
 
-    // GET(_6_): `api/goods/` + `/fetch-xsl-file`
+
+    
+
     async buildXls(req, res, next) {
         try {
             const data = await Goods.findAll()
@@ -180,31 +190,30 @@ class GoodsController {
 
 
 
-// STOPED 
-    // POST(_7_): `api/goods/` + `/parce-xls`
-    async parceXls(req, res, next) {
-        try {
-            const img = req.files.wsx;
-            const fileName = uuid.v4() + img.name;
-            await img.mv(path.resolve(__dirname, "..", "static", fileName));
 
-console.log(`${__dirname}/static/${fileName}`)
-            const workSheetsFromFile = xlsx.parse(`${__dirname}/../static/${fileName}`);
+//     async parceXls(req, res, next) {
+//         try {
+//             const img = req.files.wsx;
+//             const fileName = uuid.v4() + img.name;
+//             await img.mv(path.resolve(__dirname, "..", "static", fileName));
 
-            console.log(workSheetsFromFile)
-            // await fs.promises.unlink("static/" + fileName);
+// console.log(`${__dirname}/static/${fileName}`)
+//             const workSheetsFromFile = xlsx.parse(`${__dirname}/../static/${fileName}`);
+
+//             console.log(workSheetsFromFile)
+//             // await fs.promises.unlink("static/" + fileName);
 
 
-            return res.json({workSheetsFromFile});
-        } catch (e) {
-            appendFiles(`\n616: ${e.message}`)
-            return next(
-                ApiError.badRequest(
-                    `616: ${e.message}`
-                )
-            );
-        }
-    }
+//             return res.json({workSheetsFromFile});
+//         } catch (e) {
+//             appendFiles(`\n616: ${e.message}`)
+//             return next(
+//                 ApiError.badRequest(
+//                     `616: ${e.message}`
+//                 )
+//             );
+//         }
+//     }
 
 
     async fetchListOfGoods(req, res, next) {
@@ -239,6 +248,7 @@ console.log(`${__dirname}/static/${fileName}`)
     }
 
 
+// Есть еще метод для замены параметров С КАРТИНКОЙ -> updateGoods
     async ChangeGoodsParams(req, res, next) {
         let { goodsId, name, description, group, price, priceImg, summa, artikul, barcode } = req.body;
 
@@ -280,6 +290,10 @@ console.log(`${__dirname}/static/${fileName}`)
         }
     }
 
+
+
+
+
     async increasePriceByProcent(req, res, next) {
         let { procent, group } = req.body;
         let transaction;
@@ -310,6 +324,9 @@ console.log(`${__dirname}/static/${fileName}`)
     }
 
 
+
+
+
         async createPriceTable(req, res, next) {
             const { name, note, price } = req.body;
             
@@ -326,9 +343,10 @@ console.log(`${__dirname}/static/${fileName}`)
                     ApiError.internal(`610: ${e.message}`)
                 );
             }
-    
-    
         }
+
+
+
 
         async fetchOnePrice(req, res, next) {
             const { priceId } = req.body;
@@ -345,10 +363,10 @@ console.log(`${__dirname}/static/${fileName}`)
                     ApiError.internal(`610: ${e.message}`)
                 );
             }
-    
-    
         }
     
+
+
 
         async updatePriceTable(req, res, next) {
             const { name, note, price, priceId } = req.body;
@@ -367,8 +385,9 @@ console.log(`${__dirname}/static/${fileName}`)
                 );
             }
     
-    
         }
+
+
 
         
         async updateGoodsByExel(req, res, next) {
@@ -467,7 +486,7 @@ console.log(`${__dirname}/static/${fileName}`)
                         [ a[0].g, a[1].g, a[2].g, a[3].g ], 
                         [ a[0].h, a[1].h, a[2].h, a[3].h ]
                     ],
-                    [ a[4].a, a[4].a, a[4].a, a[4].a, a[4].a, a[4].a, a[4].a, ]
+                    [ a[4].a, a[4].b, a[4].c, a[4].d, a[4].e, a[4].f, a[4].g, ]
                 ];
 
                 const goods = await Jsona.update({
