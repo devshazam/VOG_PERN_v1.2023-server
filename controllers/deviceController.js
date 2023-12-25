@@ -435,6 +435,17 @@ class DeviceController {
             return next(ApiError.internal(`603: ${e.message}`));
         }
     }
+
+    async test(req, res, next) {
+
+        try {
+            throw new Error('my-error!')
+            return res.json({test: 'test'});
+        } catch (e) {
+            appendFiles(`\n603: ${e.message}`);
+            return next(ApiError.internal(`603: ${e.message}`));
+        }
+    }
 }
 
 module.exports = new DeviceController();
