@@ -315,6 +315,7 @@ class DeviceController {
                 });
 
                 const payItem = await payItemMid.json();
+                console.log(payItem)
 
                 if (payItem.status === "success") {
                     orderMid.set({ status_pay: true });

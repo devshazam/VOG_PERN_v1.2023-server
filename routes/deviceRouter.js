@@ -19,7 +19,7 @@ router.post('/recive-order-count/', deviceController.reciveOrderCount) // № 11
 
 
 router.post('/fetch-user-by-order-id/', deviceController.fetchUserByOrderId) // № 11
-router.post('/test/', deviceController.test) // № 11
+router.get('/test/', deviceController.test) // № 11
 
 
 module.exports = router
