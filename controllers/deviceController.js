@@ -266,7 +266,7 @@ class DeviceController {
             // },
             confirmation: {
                 type: "redirect",
-                return_url: "https://kopi34.ru/admin/bar/",
+                return_url: "https://kopi34.ru/admin/user/private-office/",
             },
             description: "Оплата на сайте kopi34.ru",
             // metadata: {
@@ -306,7 +306,7 @@ class DeviceController {
                 ),
         };
         try {
-            const orderMid = await Orders.findByPk(orderId);
+            let orderMid = await Orders.findByPk(orderId);
 
             if(orderMid){
                 const payItemMid = await fetch("https://api.yookassa.ru/v3/payments/" + orderMid.pay_id, {
@@ -318,7 +318,7 @@ class DeviceController {
 
                 if (payItem.status === "success") {
                     orderMid.set({ status_pay: true });
-                    await jane.save(); 
+                    await orderMid.save(); 
                 }else if(payItem.status === "canceled"){
                     await orderMid.destroy();
                 }
