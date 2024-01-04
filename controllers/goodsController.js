@@ -33,7 +33,7 @@ class GoodsController {
     
             return res.json(goods);
         } catch (e) {
-            appendFiles(`\n610: ${e.message}`)
+            console.log(`Error: 610; ${e.message}`)
             return next(
                 ApiError.internal(`610: ${e.message}`)
             );
@@ -63,7 +63,7 @@ class GoodsController {
             });
             return res.json(goods);
         } catch (e) {
-            appendFiles(`\n611: ${e.message}`)
+            console.log(`Error: 611; ${e.message}`)
             return next(
                 ApiError.internal(
                     `611: ${e.message}`
@@ -87,7 +87,7 @@ class GoodsController {
             }
             
         } catch (e) {
-            appendFiles(`\n612: ${e.message}`)
+            console.log(`Error: 612; ${e.message}`)
             return next(
                 ApiError.internal(
                     `612: ${e.message}`
@@ -112,7 +112,7 @@ class GoodsController {
             }
             return res.json({goods});
         } catch (e) {
-            appendFiles(`\n613: ${e.message}`)
+            console.log(`Error: 613; ${e.message}`)
             return next(
                 ApiError.internal(
                     `613: ${e.message}`
@@ -148,7 +148,7 @@ class GoodsController {
 
             return res.json({success: true});
         }  catch (error) {
-            appendFiles(`\n614: ${e.message}`)
+            console.log(`Error: 614; ${e.message}`)
             return next(
                 ApiError.internal(
                     `614: ${error.message}`
@@ -178,7 +178,7 @@ class GoodsController {
             const fileLocation = await xlsxUploadCustom(buffer);
             return res.json({fileLocation});
         } catch (e) {
-            appendFiles(`\n615: ${e.message}`)
+            console.log(`Error: 615; ${e.message}`)
             return next(
                 ApiError.badRequest(
                     `615: ${e.message}`
@@ -206,7 +206,7 @@ class GoodsController {
 
 //             return res.json({workSheetsFromFile});
 //         } catch (e) {
-//             appendFiles(`\n616: ${e.message}`)
+//                         console.log(`Error: 603; ${e.message}`)
 //             return next(
 //                 ApiError.badRequest(
 //                     `616: ${e.message}`
@@ -241,7 +241,7 @@ class GoodsController {
             }
             
         } catch (e) {
-            appendFiles(`\n638: ${e.message}`);
+            console.log(`Error: 638; ${e.message}`)
             return next(ApiError.internal(`638: ${e.message}`));
         }
 
@@ -281,7 +281,7 @@ class GoodsController {
  
             return res.json(goods);
         } catch (e) {
-            appendFiles(`\n612: ${e.message}`)
+            console.log(`Error: 612; ${e.message}`)
             return next(
                 ApiError.internal(
                     `612: ${e.message}`
@@ -310,8 +310,7 @@ class GoodsController {
             await transaction.commit();
             return res.json({message: 'success!'});
         } catch (e) {
-            
-            appendFiles(`\n615: ${e.message}`)
+            console.log(`Error: 615; ${e.message}`)
             if(transaction) {
                 await transaction.rollback();
              }
@@ -338,7 +337,7 @@ class GoodsController {
         
                 return res.json(result);
             } catch (e) {
-                appendFiles(`\n610: ${e.message}`)
+                console.log(`Error: 610; ${e.message}`)
                 return next(
                     ApiError.internal(`610: ${e.message}`)
                 );
@@ -358,7 +357,7 @@ class GoodsController {
         
                 return res.json(result);
             } catch (e) {
-                appendFiles(`\n610: ${e.message}`)
+                console.log(`Error: 610; ${e.message}`)
                 return next(
                     ApiError.internal(`610: ${e.message}`)
                 );
@@ -379,7 +378,7 @@ class GoodsController {
         
                 return res.json(result);
             } catch (e) {
-                appendFiles(`\n610: ${e.message}`)
+                console.log(`Error: 610; ${e.message}`)
                 return next(
                     ApiError.internal(`610: ${e.message}`)
                 );
@@ -416,7 +415,7 @@ class GoodsController {
 
             return res.json({success: true});
             } catch (e) {
-                appendFiles(`\n610: ${e.message}`)
+                console.log(`Error: 610; ${e.message}`)
                 return next(
                     ApiError.internal(`610: ${e.message}`)
                 );
@@ -457,7 +456,7 @@ class GoodsController {
 
                 return res.json(result);
             } catch (e) {
-                appendFiles(`\n610: ${e.message}`)
+                console.log(`Error: 610; ${e.message}`)
                 if(transaction) {
                     await transaction.rollback();
                  }
@@ -501,7 +500,7 @@ class GoodsController {
 
                 return res.json(result);
             } catch (e) {
-                appendFiles(`\n610: ${e.message}`)
+                console.log(`Error: 610; ${e.message}`)
                 if(transaction) {
                     await transaction.rollback();
                  }
@@ -545,7 +544,7 @@ class GoodsController {
 
                 return res.json(result);
             } catch (e) {
-                appendFiles(`\n610: ${e.message}`)
+                console.log(`Error: 610; ${e.message}`)
                 if(transaction) {
                     await transaction.rollback();
                  }

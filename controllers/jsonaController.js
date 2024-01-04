@@ -17,7 +17,7 @@ class JsonaController {
             const json = await Jsona.findByPk(1);
             return res.json(json);
         } catch (e) {
-            appendFiles(`\n611: ${e.message}`)
+            console.log(`Error: 611; ${e.message}`)
             return next(
                 ApiError.internal(
                     `611: ${e.message}`
@@ -44,7 +44,7 @@ class JsonaController {
 
             return res.json({success: true});
         }  catch (error) {
-            appendFiles(`\n614: ${e.message}`)
+            console.log(`Error: 614; ${e.message}`)
             return next(
                 ApiError.internal(
                     `614: ${error.message}`
@@ -62,7 +62,7 @@ class JsonaController {
             const json = await Jsona.findByPk(jsonId);
             return res.json(json);
         } catch (e) {
-            appendFiles(`\n611: ${e.message}`)
+            console.log(`Error: 611; ${e.message}`)
             return next(
                 ApiError.internal(
                     `611: ${e.message}`

@@ -15,7 +15,7 @@ class PriceController {
     
             return res.json(price);
         } catch (e) {
-            appendFiles(`\n610: ${e.message}`)
+            console.log(`Error: 610; ${e.message}`)
             return next(
                 ApiError.internal(`610: ${e.message}`)
             );
@@ -31,7 +31,7 @@ class PriceController {
             const price = await Goods.findByPk(123);
             return res.json(price);
         } catch (e) {
-            appendFiles(`\n611: ${e.message}`)
+            console.log(`Error: 611; ${e.message}`)
             return next(
                 ApiError.internal(
                     `611: ${e.message}`
@@ -51,7 +51,7 @@ class PriceController {
 
             return res.json({success: true});
         }  catch (error) {
-            appendFiles(`\n614: ${e.message}`)
+            console.log(`Error: 614; ${e.message}`)
             return next(
                 ApiError.internal(
                     `614: ${error.message}`

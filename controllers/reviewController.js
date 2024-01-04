@@ -16,7 +16,7 @@ class ReviewController {
             });
              return res.json(reviewResult);
         }catch(e){
-            appendFiles(`\n617: ${e.message}`)
+            console.log(`Error: 617; ${e.message}`)
             return next(
                 ApiError.internal(
                     `617: ${e.message}`

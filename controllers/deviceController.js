@@ -51,7 +51,7 @@ class DeviceController {
 
             return res.json(device);
         } catch (e) {
-            appendFiles(`\n603: ${e.message}`);
+            console.log(`Error: 603; ${e.message}`)
             return next(ApiError.internal(`603: ${e.message}`));
         }
     }
@@ -88,7 +88,7 @@ class DeviceController {
             });
             return res.json(requisites);
         } catch (e) {
-            appendFiles(`\n603: ${e.message}`);
+            console.log(`Error: 603; ${e.message}`)
             return next(ApiError.internal(`603: ${e.message}`));
         }
     }
@@ -109,7 +109,7 @@ class DeviceController {
             });
             return res.json(order);
         } catch (e) {
-            appendFiles(`\n604: ${e.message}`);
+            console.log(`Error: 604; ${e.message}`)
             return next(ApiError.internal(`604: ${e.message}`));
         }
     }
@@ -137,7 +137,7 @@ class DeviceController {
     //             });
     //             return res.json(devices);
     //         } catch (e) {
-    //             appendFiles(`\n604: ${e.message}`);
+    //                         console.log(`Error: 603; ${e.message}`)
     //             return next(ApiError.internal(`604: ${e.message}`));
     //         }
     //     }
@@ -151,7 +151,7 @@ class DeviceController {
     //             });
     //             return res.json(devices);
     //         } catch (e) {
-    //             appendFiles(`\n604: ${e.message}`);
+    //                         console.log(`Error: 603; ${e.message}`)
     //             return next(ApiError.internal(`604: ${e.message}`));
     //         }
     //     } else {
@@ -164,7 +164,7 @@ class DeviceController {
     //             });
     //             return res.json(devices);
     //         } catch (e) {
-    //             appendFiles(`\n604: ${e.message}`);
+    //                         console.log(`Error: 603; ${e.message}`)
     //             return next(ApiError.internal(`604: ${e.message}`));
     //         }
     //     }
@@ -183,7 +183,7 @@ class DeviceController {
 
             return res.json({status: 'success'});
         } catch (e) {
-            appendFiles(`\n602: ${e.message}`);
+            console.log(`Error: 602; ${e.message}`)
             return next(ApiError.internal(`602: ${e.message}`));
         }
     }
@@ -213,7 +213,7 @@ class DeviceController {
             await transaction.commit();
             return res.json({message: `successfully saved order`})
         } catch (e) {
-            appendFiles(`\n601: ${e.message}`);
+            console.log(`Error: 601; ${e.message}`)
             if(transaction) {
                 await transaction.rollback();
              }
@@ -236,7 +236,7 @@ class DeviceController {
             })
             return res.json(deviceMid);
         } catch (e) {
-            appendFiles(`\n605: ${e.message}`);
+            console.log(`Error: 605; ${e.message}`)
             return next(ApiError.internal(`605: ${e.message}`));
         }
     }
@@ -287,7 +287,7 @@ class DeviceController {
 
             return res.json(payItem);
         } catch (e) {
-            appendFiles(`\n629: ${e.message}`);
+            console.log(`Error: 629; ${e.message}`)
             return next(ApiError.internal(`629: ${e.message}`));
         }
     }
@@ -326,7 +326,7 @@ class DeviceController {
             }
             return res.json({ status: "success!" });
         } catch (e) {
-            appendFiles(`\n634: ${e.message}`);
+            console.log(`Error: 634; ${e.message}`)
             return next(ApiError.internal(`634: ${e.message}`));
         }
 
@@ -341,7 +341,7 @@ class DeviceController {
             });
             return res.json(numberBasket);
         } catch (e) {
-            appendFiles(`\n608: ${e.message}`);
+            console.log(`Error: 608; ${e.message}`)
             return next(ApiError.internal(`608: ${e.message}`));
         }
     }
@@ -363,7 +363,7 @@ class DeviceController {
             });
             return res.json(devices);
         } catch (e) {
-            appendFiles(`\n609: ${e.message}`);
+            console.log(`Error: 609; ${e.message}`)
             return next(ApiError.internal(`609: ${e.message}`));
         }
     }
@@ -380,7 +380,7 @@ class DeviceController {
             });
             return res.json(requisites);
         } catch (e) {
-            appendFiles(`\n603: ${e.message}`);
+            console.log(`Error: 603; ${e.message}`)
             return next(ApiError.internal(`603: ${e.message}`));
         }
     }
@@ -398,7 +398,7 @@ class DeviceController {
 
             return res.json(orders);
         } catch (e) {
-            appendFiles(`\n628: ${e.message}`);
+            console.log(`Error: 628; ${e.message}`)
             return next(ApiError.internal(`628: ${e.message}`));
         }
     }
@@ -415,7 +415,7 @@ class DeviceController {
             })
             return res.json(deviceMid);
         } catch (e) {
-            appendFiles(`\n627: ${e.message}`);
+            console.log(`Error: 627; ${e.message}`)
             return next(ApiError.internal(`627: ${e.message}`));
         }
     }
@@ -432,7 +432,7 @@ class DeviceController {
             });
             return res.json(midUser);
         } catch (e) {
-            appendFiles(`\n603: ${e.message}`);
+            console.log(`Error: 603; ${e.message}`)
             return next(ApiError.internal(`603: ${e.message}`));
         }
     }
@@ -443,7 +443,7 @@ class DeviceController {
             throw new Error('my-error!')
             return res.json({test: 'test'});
         } catch (e) {
-            appendFiles(`\n603: ${e.message}`);
+            console.log(`Error: 603; ${e.message}`)
             return next(ApiError.internal(`603: ${e.message}`));
         }
     }

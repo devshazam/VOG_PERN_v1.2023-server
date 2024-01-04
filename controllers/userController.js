@@ -9,7 +9,7 @@ const generateJwt = (id, email, role, phone, basket) => {
     return jwt.sign(
         {id, email, role, phone, basket},
         process.env.SECRET_KEY,
-        {expiresIn: '24h'}
+        {expiresIn: '7d'}
     )
 }
 
@@ -74,7 +74,7 @@ class UserController {
                 const token = generateJwt(user.id, user.email, user.role, user.phone, user.basket)
                 return res.json({token})
                 }catch(e){
-                    appendFiles(`\n618: ${e.message}`)
+                    console.log(`Error: 618; ${e.message}`)
                     return next(
                         ApiError.badRequest(
                             `618: ${e.message}`
@@ -82,7 +82,7 @@ class UserController {
                     );
                 }
         }catch(e){
-            appendFiles(`\n619: ${e.message}`)
+            console.log(`Error: 619; ${e.message}`)
             return next(
                 ApiError.badRequest(
                     `619: ${e.message}`
