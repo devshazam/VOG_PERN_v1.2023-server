@@ -317,7 +317,7 @@ class DeviceController {
                 const payItem = await payItemMid.json();
                 console.log(payItem)
 
-                if (payItem.status === "success") {
+                if (payItem.status === "succeeded") {
                     orderMid.set({ status_pay: true });
                     await orderMid.save(); 
                 }else if(payItem.status === "canceled"){
