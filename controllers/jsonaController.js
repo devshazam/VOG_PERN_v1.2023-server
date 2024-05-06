@@ -1,4 +1,4 @@
-const { Jsona } = require("../models/models");
+const { Jsona , Editor} = require("../models/models");
 const ApiError = require("../error/ApiError");
 const { appendFiles } = require("../error-log/LogHandling");
 const uuid = require("uuid");
@@ -9,7 +9,42 @@ const fs = require("fs");
 
 class JsonaController {
 
+    async createObject(req, res, next) {
+        try {
+            let {rank} = req.body
+            const {image} = req.files
+            let fileName = uuid.v4() + ".jpg"
+            image.mv(path.resolve(__dirname, '..', 'static', fileName))
+            const device = await Editor.create({rank, img: fileName});
+            return res.json(device)
+        } catch (e) {
+            console.log(`Error: 611; ${e.message}`)
+            return next(
+                ApiError.internal(
+                    `611: ${e.message}`
+                )
+            );
+        }
+    }   
 
+    async getObject(req, res, next) {
+        try {
+            let {rank} = req.body
+            const project = await Editor.findAll({
+                where: {
+                  rank
+                },
+              });
+            return res.json(project);
+        } catch (e) {
+            console.log(`Error: 611; ${e.message}`)
+            return next(
+                ApiError.internal(
+                    `611: ${e.message}`
+                )
+            );
+        }
+    }   
 
     async fetchJson(req, res, next) {
 

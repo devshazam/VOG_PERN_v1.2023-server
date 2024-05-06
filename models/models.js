@@ -93,6 +93,13 @@ const Jsona = sequelize.define('jsona', {
 },
 { timestamps: false })
 
+const Editor = sequelize.define('editor', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    rank: {type: DataTypes.STRING},
+    img: {type: DataTypes.STRING}, // Ссылка на файл 
+},
+{ timestamps: false })
+
 
 Orders.hasMany(Basket)
 Basket.belongsTo(Orders)
@@ -133,7 +140,8 @@ module.exports = {
     Orders,
     Basket,
     Price,
-    Jsona
+    Jsona, 
+    Editor
 }
 
 
