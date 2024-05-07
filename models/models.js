@@ -99,6 +99,13 @@ const Editor = sequelize.define('editor', {
     img: {type: DataTypes.STRING}, // Ссылка на файл 
 },
 { timestamps: false })
+const Editobjects = sequelize.define('editobjects', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    rank: {type: DataTypes.STRING},
+    value: {type: DataTypes.JSON, allowNull: false},
+    img: {type: DataTypes.STRING}, // Ссылка на файл 
+},
+{ timestamps: false })
 
 
 Orders.hasMany(Basket)
@@ -141,7 +148,8 @@ module.exports = {
     Basket,
     Price,
     Jsona, 
-    Editor
+    Editor,
+    Editobjects,
 }
 
 

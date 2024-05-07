@@ -9,6 +9,8 @@ router.post('/fetch', jsonaController.fetchJson) // № 5
 router.post('/fetch-price-of-produce', jsonaController.fetchPriceOfProduce) // № 5
 router.post('/create', jsonaController.createObject) // № 5
 router.post('/get-editor-objects', jsonaController.getObject) // № 5
+router.post('/get-editor-objects-editor', jsonaController.getObjectEditor) // № 5
+router.post('/get-editor-objects2', jsonaController.createObjectEditor) // № 5
 
 
 
