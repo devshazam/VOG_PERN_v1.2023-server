@@ -43,7 +43,7 @@ app.use('/api', router)
 // Подключать последним! - обработка ошибок.
 app.use(errorHandler)
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.send("GET Request Called")
 })
 
