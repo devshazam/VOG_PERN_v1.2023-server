@@ -108,6 +108,9 @@ const Editobjects = sequelize.define('editobjects', {
 { timestamps: false })
 
 
+User.hasMany(Editobjects)
+Editobjects.belongsTo(User)
+
 Orders.hasMany(Basket)
 Basket.belongsTo(Orders)
 

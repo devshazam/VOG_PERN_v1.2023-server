@@ -31,12 +31,12 @@ class JsonaController {
 
     async createObjectEditor(req, res, next) {
         try {
-            let {image,rank, value} = req.body
+            let {image,rank, value, userId} = req.body
             const buffer = Buffer.from(image.split(",")[1], "base64");
             let fileName = uuid.v4() + ".png"
             fs.writeFileSync(path.resolve(__dirname, '..', 'static', fileName), buffer);
-
-            const device = await Editobjects.create({rank, img: fileName, value});
+console.log(typeof userId, userId)
+            const device = await Editobjects.create({rank, img: fileName, value, userId});
             return res.json(device)
         } catch (e) {
             console.log(`Error: 611; ${e.message}`)
