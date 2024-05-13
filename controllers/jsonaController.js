@@ -13,6 +13,7 @@ class JsonaController {
         try {
             let {rank} = req.body
             const {image} = req.files
+            console.log(image)
             let fileName = uuid.v4() + ".jpg"
             image.mv(path.resolve(__dirname, '..', 'static', fileName))
             const device = await Editor.create({rank, img: fileName});
@@ -30,10 +31,11 @@ class JsonaController {
 
     async createObjectEditor(req, res, next) {
         try {
-            let {rank, value} = req.body
-            const {image} = req.files
-            let fileName = uuid.v4() + ".jpg"
-            image.mv(path.resolve(__dirname, '..', 'static', fileName))
+            let {image,rank, value} = req.body
+            const buffer = Buffer.from(image.split(",")[1], "base64");
+            let fileName = uuid.v4() + ".png"
+            fs.writeFileSync(path.resolve(__dirname, '..', 'static', fileName), buffer);
+
             const device = await Editobjects.create({rank, img: fileName, value});
             return res.json(device)
         } catch (e) {
@@ -49,6 +51,7 @@ class JsonaController {
     async getObjectEditor(req, res, next) {
         try {
             let {rank} = req.body
+            console.log(rank)
             const project = await Editobjects.findAll({
                 where: {
                   rank
