@@ -4,6 +4,8 @@ const deviceController = require('../controllers/deviceController')
 
 
 router.post('/create-device/', deviceController.createDevice) // № 1
+router.post('/create-device-app/', deviceController.createDeviceApp) // № 1
+
 router.post('/create-requisites/', deviceController.createRequisites) // № 11
 router.post('/orders-admin-list/', deviceController.ordersAdminList) // № 2
 router.post('/fetch-order-item/', deviceController.fetchAllDevicesFromOneOrder) // № 11

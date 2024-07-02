@@ -4,6 +4,7 @@ const path = require("path");
 // const fs2 = require('fs')
 // const fs = require('fs').promises;
 const fs = require("fs");
+const b64toBlob  = require("b64-to-blob");
 
 const uploadParams = { Bucket: process.env.BACKET, Key: "", Body: "" }; // <--- заменить
 
@@ -34,6 +35,24 @@ const fileUploadCustom = async (img, pathName = "") => {
     }
     return data.Location;
 };
+
+
+const fileUploadCustomFromApp = async (img) => {
+
+
+    const Key = `new-davse/${uuid.v4()}.jpg`
+    var base64toBlob = b64toBlob(img, 'image/jpg');
+    const arrayBuffer = (await base64toBlob.arrayBuffer());
+    const Body = Buffer.from(arrayBuffer);
+    const data = await s3.upload({...uploadParams, Key, Body }).promise();
+    // TODO сделать обраттотку ошибок data
+    console.log(data)
+
+    return data.Location;
+};
+
+
+
 
 const xlsxUploadCustom = async (buffer) => {
     const uniqFileName = uuid.v4() + ".xlsx";
@@ -69,4 +88,4 @@ const fileDelete = async (object) => {
     return res;
 };
 
-module.exports = { fileUploadCustom, fileDelete, xlsxUploadCustom };
+module.exports = { fileUploadCustom, fileDelete, xlsxUploadCustom, fileUploadCustomFromApp };

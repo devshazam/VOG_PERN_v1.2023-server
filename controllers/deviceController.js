@@ -12,7 +12,7 @@ const {
     Review
 } = require("../models/models");
 const ApiError = require("../error/ApiError");
-const { fileUploadCustom, fileDelete } = require("../S3/s3Upload");
+const { fileUploadCustom, fileDelete, fileUploadCustomFromApp } = require("../S3/s3Upload");
 const sequelize = require('../db')
 
 class DeviceController {
@@ -32,6 +32,42 @@ class DeviceController {
                     "devices/"
                 );
             }
+            const device = await Device.create({
+                name,
+                feature: description,
+                userId,
+                descriptionText,
+                img: fileLocation,
+                goodId,
+                price: +value,
+                basket: [
+                    {userId}
+                ]
+            },
+            {
+              include: [Basket],
+            });
+            // await Basket.create({ userId, deviceId: device.id });
+
+            return res.json(device);
+        } catch (e) {
+            console.log(`Error: 603; ${e.message}`)
+            return next(ApiError.internal(`603: ${e.message}`));
+        }
+    }
+
+
+
+
+
+    async createDeviceApp(req, res, next) {
+        let { name, value, description, descriptionText, userId, goodId, image } = req.body;
+        goodId = goodId || null;
+
+        try {
+            const fileLocation = await fileUploadCustomFromApp( image );
+            console.log(fileLocation)
+  
             const device = await Device.create({
                 name,
                 feature: description,
